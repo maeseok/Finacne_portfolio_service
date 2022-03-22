@@ -26,12 +26,9 @@ def NASDAQ_rate(df_nasdaq,Name):
     NASDAQ.append(nowDATE)
     NASDAQ.append(Name)
     NASDAQ.append('$ '+str(nasdaqrate['Close'].values[1]))
-    gap = "{:.2f}".format(nasdaqrate['Close'].values[0]-nasdaqrate['Close'].values[1])
+    gap = "{:.2f}".format(nasdaqrate['Close'].values[1]-nasdaqrate['Close'].values[0])
     NASDAQ.append('$ '+gap)
-    if(float(gap)<0):
-        NASDAQ.append(str('-'+"{:.2f}".format(nasdaqrate['Change'].values[1]*100))+'%')
-    else:
-        NASDAQ.append(str("{:.2f}".format(nasdaqrate['Change'].values[1]*100))+'%')
+    NASDAQ.append(str("{:.2f}".format(nasdaqrate['Change'].values[1]*100))+'%')
     return NASDAQ
 #나스닥 데이터 연결하는 함수
 def NASDAQ_connect():
@@ -53,7 +50,8 @@ def NYSE_rate(df_nyse,Name):
     NYSE.append(nowDATE)
     NYSE.append(Name)
     NYSE.append('$ '+str(nyserate['Close'].values[1]))
-    NYSE.append('$ '+"{:.2f}".format(nyserate['Close'].values[0]-nyserate['Close'].values[1]))
+    gap = "{:.2f}".format(nyserate['Close'].values[1]-nyserate['Close'].values[0])
+    NYSE.append('$ '+gap)
     NYSE.append(str("{:.2f}".format(nyserate['Change'].values[1]*100))+'%')
     return NYSE
 #뉴욕 증권거래소 연결하는 함수
@@ -76,7 +74,8 @@ def AMEX_rate(df_amex,Name):
     AMEX.append(nowDATE)
     AMEX.append(Name)
     AMEX.append('$ '+str(amexrate['Close'].values[1]))
-    AMEX.append('$ '+"{:.2f}".format(amexrate['Close'].values[0]-amexrate['Close'].values[1]))
+    gap = "{:.2f}".format(amexrate['Close'].values[1]-amexrate['Close'].values[0])
+    AMEX.append('$ '+gap)
     AMEX.append(str("{:.2f}".format(amexrate['Change'].values[1]*100))+'%')
     return AMEX
 #아맥스 연결하는 함수
@@ -88,10 +87,10 @@ def AMEX_connect():
     return df_amex
 
 #정리된 df 만들기!
-def df_made(Code,Name):
+def df_made(Code,Name,Date):
     symbol = Code[Code.Name==Name].Symbol.values[0].strip()
     #이 값을 바꾸면 언제부터 시작할지도!(차트)
-    df = fdr.DataReader(symbol,"2020")
+    df = fdr.DataReader(symbol,Date)
     #중요! Date를 index에서 제외시킨다!!!! -> df 자체를 정렬된 상태로 저장
     df.reset_index(inplace=True)
     df = df[['Date','Close']]

@@ -19,11 +19,11 @@ app = Flask("Finance Portfolio")
 CODE=db_connect()
 
 #대표 화면
-@app.route("/")
+@app.route("/main")
 def home():
     return render_template("index.html")
 
-@app.route("/main")
+@app.route("/")
 def main():
     return render_template("main.html")
 #포트폴리오 이용 설명
@@ -59,25 +59,26 @@ def inquirySearch():
 #코스피 코스닥 오늘의 시세 출력
 @app.route("/inquiry/todayrate")
 def inquiryTodayrate():
-    #try:
-    company = request.args.get('company')
-    df_krx = c.KRX_connect()
-    chartpath= "/nomadcoders/boot/DB/chart.txt"
-    file = open(chartpath, 'r')
-    chartitem = file.read()
-    file.close()
-    stock_rate = c.KRX_rate(df_krx,company)
-    df = US.df_made(df_krx,company)
-    if(company not in chartitem):
-        #chart img
-        US.basic_chart(df,company)
-    else:
-        print("Exist")
-        pass
-    #chart html
-    US.real_chart(df,company)
-    #except:
-        #return redirect("/")
+    try:
+        company = request.args.get('company')
+        date = request.args.get('date')
+        df_krx = c.KRX_connect()
+        chartpath= "/nomadcoders/boot/DB/chart.txt"
+        file = open(chartpath, 'r')
+        chartitem = file.read()
+        file.close()
+        stock_rate = c.KRX_rate(df_krx,company)
+        df = US.df_made(df_krx,company,date)
+        if(company not in chartitem):
+            #chart img
+            US.basic_chart(df,company)
+        else:
+            print("Exist")
+            pass
+        #chart html
+        US.real_chart(df,company)
+    except:
+        return redirect("/")
     return render_template("inquiryTodayrate.html",searchingBy=company,stockRate=stock_rate)
 
 #나스닥 오늘의 종목 검색
@@ -89,13 +90,14 @@ def NasdaqSearch():
 def NasdaqRate():
     try:
         company = request.args.get('company')
+        date = request.args.get('date')
         chartpath= "/nomadcoders/boot/DB/chart.txt"
         file = open(chartpath, 'r')
         chartitem = file.read()
         file.close()
         df_nasdaq = US.NASDAQ_connect()
         stock_rate = US.NASDAQ_rate(df_nasdaq,company)
-        df = US.df_made(df_nasdaq,company)
+        df = US.df_made(df_nasdaq,company,date)
         if(company not in chartitem):
             #chart img
             US.basic_chart(df,company)
@@ -117,13 +119,14 @@ def NyseSearch():
 def NyseRate():
     try:
         company = request.args.get('company')
+        date = request.args.get('date')
         chartpath= "/nomadcoders/boot/DB/chart.txt"
         file = open(chartpath, 'r')
         chartitem = file.read()
         file.close()
         df_nyse = US.NYSE_connect()
         stock_rate = US.NYSE_rate(df_nyse,company)
-        df = US.df_made(df_nyse,company)
+        df = US.df_made(df_nyse,company,date)
         if(company not in chartitem):
             #chart img
             US.basic_chart(df,company)
@@ -145,13 +148,14 @@ def AmexSearch():
 def AmexRate():
     try:
         company = request.args.get('company')
+        date = request.args.get('date')
         chartpath= "/nomadcoders/boot/DB/chart.txt"
         file = open(chartpath, 'r')
         chartitem = file.read()
         file.close()
         df_amex = US.AMEX_connect()
         stock_rate = US.AMEX_rate(df_amex,company)
-        df = US.df_made(df_amex,company)
+        df = US.df_made(df_amex,company,date)
         if(company not in chartitem):
             #chart img
             US.basic_chart(df,company)
