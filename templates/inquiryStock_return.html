@@ -100,15 +100,15 @@
         <div class="table-responsive">
           <table class="table table-striped table-sm">
             <thead>
-              <th scope="col">매수 날짜/가격</th>
-              <th scope="col">매도 날짜/가격</th>
+              <th scope="col">매수 날짜 / 가격</th>
+              <th scope="col">매도 날짜 / 가격</th>
               <th scope="col">수익률</th>
             </thead>
             <tbody>
               <tr>
-                <td>{{purDate}}</td>
-                <td>{{saleDate}}</td>
-                <td>{{Profit}}</td>
+                {% for i in range(0,4) %}
+                <td>{{KRX[i]}}</td>
+                {%endfor%}
               </tr>
             </tbody>
           </table>

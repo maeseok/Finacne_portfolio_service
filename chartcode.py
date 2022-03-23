@@ -61,6 +61,20 @@ def make_basic_chart(df,company):
     file.write("\n")
     file.close()
 
+#한국 수익률 형식화 함수
+def KRX_yield(df_KRX,Name,firstdate,lastdate):
+
+    symbol = df_KRX[df_KRX.Name==Name].Symbol.values[0].strip()
+    rate = fdr.DataReader(symbol,firstdate,lastdate)
+    rate = rate[['Close']]
+    Firstrate = rate['Close'].values[0]
+    Lastrate = rate['Close'].values[-1]
+    KRX = []
+    KRX.append(firstdate+"\t"+ '{0:,}'.format(Firstrate)+"원")
+    KRX.append(lastdate+"\t" + "{0:,}".format(Lastrate) +"원")
+    KRXyield = (int(Lastrate)-int(Firstrate))/int(Firstrate)*100
+    KRX.append(str("{:.2f}".format(KRXyield)+'%'))
+    return KRX
 
 
 

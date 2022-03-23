@@ -41,12 +41,12 @@ def inquiry():
 #코인 시세 조회
 @app.route("/inquiry/coin")
 def coininquiry():
-    try:
-        coinlist,content = COIN.coin_connect()
-        coinname = COIN.name_correct(coinlist)
-        coinprice = COIN.price_correct(coinlist, content)
-    except:
-        return redirect("/")
+    #try:
+    coinlist,content = COIN.coin_connect()
+    coinname = COIN.name_correct(coinlist)
+    coinprice = COIN.price_correct(coinlist, content)
+    #except:
+        #return redirect("/")
     return render_template("inquiryCoin.html",coinName=coinname,coinPrice=coinprice)
 #포트폴리오 
 @app.route("/portfolio")
@@ -63,18 +63,10 @@ def inquiryTodayrate():
         company = request.args.get('company')
         date = request.args.get('date')
         df_krx = c.KRX_connect()
-        chartpath= "/nomadcoders/boot/DB/chart.txt"
-        file = open(chartpath, 'r')
-        chartitem = file.read()
-        file.close()
         stock_rate = c.KRX_rate(df_krx,company)
         df = US.df_made(df_krx,company,date)
-        if(company not in chartitem):
-            #chart img
-            US.basic_chart(df,company)
-        else:
-            print("Exist")
-            pass
+        #chart img
+        US.basic_chart(df,company)
         #chart html
         US.real_chart(df,company)
     except:
@@ -91,19 +83,11 @@ def NasdaqRate():
     try:
         company = request.args.get('company')
         date = request.args.get('date')
-        chartpath= "/nomadcoders/boot/DB/chart.txt"
-        file = open(chartpath, 'r')
-        chartitem = file.read()
-        file.close()
         df_nasdaq = US.NASDAQ_connect()
         stock_rate = US.NASDAQ_rate(df_nasdaq,company)
         df = US.df_made(df_nasdaq,company,date)
-        if(company not in chartitem):
-            #chart img
-            US.basic_chart(df,company)
-        else:
-            print("Exist")
-            pass
+        #chart img
+        US.basic_chart(df,company)
         #chart html
         US.real_chart(df,company)
     except:
@@ -119,20 +103,11 @@ def NyseSearch():
 def NyseRate():
     try:
         company = request.args.get('company')
-        date = request.args.get('date')
-        chartpath= "/nomadcoders/boot/DB/chart.txt"
-        file = open(chartpath, 'r')
-        chartitem = file.read()
-        file.close()
         df_nyse = US.NYSE_connect()
         stock_rate = US.NYSE_rate(df_nyse,company)
         df = US.df_made(df_nyse,company,date)
-        if(company not in chartitem):
-            #chart img
-            US.basic_chart(df,company)
-        else:
-            print("Exist")
-            pass
+        #chart img
+        US.basic_chart(df,company)
         #chart html
         US.real_chart(df,company)
     except:
@@ -149,19 +124,11 @@ def AmexRate():
     try:
         company = request.args.get('company')
         date = request.args.get('date')
-        chartpath= "/nomadcoders/boot/DB/chart.txt"
-        file = open(chartpath, 'r')
-        chartitem = file.read()
-        file.close()
         df_amex = US.AMEX_connect()
         stock_rate = US.AMEX_rate(df_amex,company)
         df = US.df_made(df_amex,company,date)
-        if(company not in chartitem):
-            #chart img
-            US.basic_chart(df,company)
-        else:
-            print("Exist")
-            pass
+        #chart img
+        US.basic_chart(df,company)
         #chart html
         US.real_chart(df,company)
     except:
@@ -181,18 +148,15 @@ def inquiryReturn():
 #종목 수익률 출력
 @app.route("/inquiry/stock_return")
 def stock_return():
-    try:
-        stocks = request.args.get('stocks')
-        code = only_code_made(CODE, stocks)
-        if code:
-            firstdate = request.args.get('purchase_date')
-            lastdate = request.args.get('sale_date')
-            stocks,firstdate,lastdate,profit = rate_import(code, firstdate, lastdate, stocks, nowDATE)
-        else:
-            return redirect("/")
-        return render_template("inquiryStock_return.html",stockItem=stocks,purDate=firstdate,saleDate=lastdate,Profit = profit)
-    except:
-        return redirect("/")
+    #try:
+    stocks = request.args.get('stocks')
+    firstdate = request.args.get('purchase_date')
+    lastdate = request.args.get('sale_date')
+    df_krx = c.KRX_connect()
+    KRX = c.KRX_yield(df_krx, stocks, firstdate, lastdate)
+    return render_template("inquiryStock_return.html",KRX=KRX)
+    #except:
+        #return redirect("/")
 
 #종목 매수 정보 입력
 @app.route("/portfolio/buy")
