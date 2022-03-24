@@ -38,16 +38,27 @@ def inqu_explain():
 @app.route("/inquiry")
 def inquiry():
     return render_template("inquiry.html")
-#코인 시세 조회
+#코인 시세 검색
 @app.route("/inquiry/coin")
 def coininquiry():
+    return render_template("inquiryCoin.html")
+#코인 시세 결과
+@app.route("/inquiry/coinrate")
+def coinreturn():
     #try:
-    coinlist,content = COIN.coin_connect()
-    coinname = COIN.name_correct(coinlist)
-    coinprice = COIN.price_correct(coinlist, content)
+    moneyvalue = request.args.get('moneyValue')
+    coinname = request.args.get('coinname')
+    date = request.args.get('date')
+    #df 기초 틀까지 완성완료
+    df= COIN.coin_connect(moneyvalue,coinname,(2022-date)*365)
+    #여기서부터 해야함
+    coinitem = COIN.name_correct(coinlist,moneyvalue,coinname)
+    print("-------------------------------------------------")
+    print(coinname)
+    #coinprice = COIN.price_correct(coinlist, content)
     #except:
         #return redirect("/")
-    return render_template("inquiryCoin.html",coinName=coinname,coinPrice=coinprice)
+    return render_template("inquiryCoinrate.html")
 #포트폴리오 
 @app.route("/portfolio")
 def portfolio():
