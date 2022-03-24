@@ -1,6 +1,8 @@
 import pyupbit
 import datetime
-
+import matplotlib.pyplot as plt
+import pandas as pd
+import plotly.express as px
 
 
 coin = ["비트코인","이더리움","네오","메탈","라이트코인","리플","이더리움 클래식","오미세고",
@@ -40,17 +42,61 @@ def coin_connect(moneyvalue,coinname,date):
     return df
 
 #코인 이름 형식화 후 리스트로 저장 (여기서부터 수정해야함!!!)
-def coin_rate(coinlist,moneyvalue,coinitem):
+def coin_rate(moneyvalue,coinitem,df):
     nowDATE = time_format()
+    df_coin = df[['open']]
+    df_coin = df_coin[-2:]
+    firstrate = df_coin['open'].values[0]
+    lastrate = df_coin['open'].values[1]
     coinrate =[]
+    #날짜와 코인 추가
     coinrate.append(nowDATE)
-    for i in range(len(coin)):
-        if(coinitem ==coin[i]):
-            number = i
-            coinrate.append(coin[number]+"("+moneyvalue+")")
-        else:
-            pass
+    coinrate.append(coinitem+"("+moneyvalue+")")
+    coinrate.append("{0:,.0f}".format(lastrate)+"원")
+    #변동 계산 및 추가
+    gap = "{0:,.0f}".format(lastrate-firstrate)
+    coinrate.append(gap+"원")
+    #수익률 계산 및 추가
+    profit = "{:.2f}".format((lastrate-firstrate)/firstrate*100)
+    coinrate.append("{0:,}".format(float(profit))+"%")
     return coinrate
+
+#기본 차트 만들기
+def basic_chart(df,Name):
+    df['date'] = df.index
+    #차트크기
+    plt.figure(figsize=(13,4))
+    #차트 값 (x랑 y에 어떤 값 넣을지)
+    plt.plot(df['date'],df['open'])
+    #차트 행마다 이름
+    plt.xlabel('Date')
+    plt.ylabel('Close')
+    src="./static/assets/img/"
+    plt.savefig(src+Name + ".png")
+    
+    chartpath= "/nomadcoders/boot/DB/chart.txt"
+    file = open(chartpath, 'a')
+    file.write(Name)
+    file.write("\n")
+    file.close()
+#내가 잘 모르는 내용
+def real_chart(df,company):
+    #고급 차트 생성
+    fig = px.line(df, x='date', y='open', title='{}의 시가(Open) '.format(company))
+
+    fig.update_xaxes(
+        rangeslider_visible=True,
+        rangeselector=dict(
+            buttons=list([
+                dict(count=1, label="1m", step="month", stepmode="backward"),
+                dict(count=3, label="3m", step="month", stepmode="backward"),
+                dict(count=6, label="6m", step="month", stepmode="backward"),
+                dict(step="all")
+            ])
+        )
+    )
+    fig.write_html("./templates/chart.html")
+
 
 #코인 가격 형식화 후 리스트로 저장
 def price_correct(coinlist,content):
@@ -73,7 +119,3 @@ def COIN_made(coinlist,content):
         COIN[coinname[i]]=coinprice[i]
 
     return COIN
-#nowDate = time_format()
-#df = pyupbit.get_ohlcv("KRW-BTC",interval="day",to = nowDate,count = 1065)
-#print(df)
-a,b = coin_connect("USD", "비트코인", 1065)

@@ -49,16 +49,22 @@ def coinreturn():
     moneyvalue = request.args.get('moneyValue')
     coinname = request.args.get('coinname')
     date = request.args.get('date')
-    #df 기초 틀까지 완성완료
-    df= COIN.coin_connect(moneyvalue,coinname,(2022-date)*365)
-    #여기서부터 해야함
-    coinitem = COIN.name_correct(coinlist,moneyvalue,coinname)
-    print("-------------------------------------------------")
-    print(coinname)
-    #coinprice = COIN.price_correct(coinlist, content)
+    #날짜 계산 형식
+    now = datetime.datetime.now()
+    month=int(now.strftime('%m'))
+    day = int(now.strftime('%d'))
+    #2022년일 때 가져올 데이터 개수 계산
+    if(date!="2022"):
+        date = (2022-int(date))*365
+    elif(date=="2022"):
+        date = (month-1)*30+day
+    df_coin= COIN.coin_connect(moneyvalue,coinname,date)
+    coinrate = COIN.coin_rate(moneyvalue,coinname,df_coin)
+    COIN.basic_chart(df_coin, coinname)
+    COIN.real_chart(df_coin,coinname)
     #except:
         #return redirect("/")
-    return render_template("inquiryCoinrate.html")
+    return render_template("inquiryCoinrate.html",searchingBy=coinname,stockRate=coinrate)
 #포트폴리오 
 @app.route("/portfolio")
 def portfolio():
