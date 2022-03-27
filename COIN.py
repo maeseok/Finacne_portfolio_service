@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import plotly.express as px
 
-
+#코인 이름 한글로 정리
 coin = ["비트코인","이더리움","네오","메탈","라이트코인","리플","이더리움 클래식","오미세고",
 "스테이터스네트워크토큰","웨이브","넴","퀸텀","리스크","스팀","스텔라루멘",
 "아더","아크","스토리지","그로스톨코인","어거","에이다","스팀달러","파워렛저","비트코인 골드",
@@ -31,25 +31,28 @@ def coin_connect(moneyvalue,coinname,date):
     #코인 리스트 가져오기(pyupbit)
     nowDATE = time_format()
     coinlist= pyupbit.get_tickers(fiat=moneyvalue)
-    #코인 이름과 가격 딕셔너리 형태로 저장
+    #한글로 입력 받은 코인 이름을 영어로 변경
     coinitem=""
     for i in range(len(coin)):
         if(coinname ==coin[i]):
             coinitem = coinlist[i]
         else:
             pass
+    #df에 해당 코인의 데이터를 저장
     df = pyupbit.get_ohlcv(coinitem,interval="day",to = nowDATE,count = date)
     return df
 
-#코인 이름 형식화 후 리스트로 저장 (여기서부터 수정해야함!!!)
+#코인 가격 리스트에 저장
 def coin_rate(moneyvalue,coinitem,df):
     nowDATE = time_format()
+    #오픈 가격만 뒤에서 2줄만 가져옴
     df_coin = df[['open']]
     df_coin = df_coin[-2:]
+    #해당 값을 두 개의 변수에 저장
     firstrate = df_coin['open'].values[0]
     lastrate = df_coin['open'].values[1]
     coinrate =[]
-    #날짜와 코인 추가
+    #날짜와 코인 이름, 현재 가격을 추가
     coinrate.append(nowDATE)
     coinrate.append(coinitem+"("+moneyvalue+")")
     coinrate.append("{0:,.0f}".format(lastrate)+"원")
@@ -63,6 +66,7 @@ def coin_rate(moneyvalue,coinitem,df):
 
 #기본 차트 만들기
 def basic_chart(df,Name):
+    #현재 인덱스인 값을 date라는 값으로 데이터프레임에 추가
     df['date'] = df.index
     #차트크기
     plt.figure(figsize=(13,4))
@@ -74,11 +78,6 @@ def basic_chart(df,Name):
     src="./static/assets/img/"
     plt.savefig(src+Name + ".png")
     
-    chartpath= "/nomadcoders/boot/DB/chart.txt"
-    file = open(chartpath, 'a')
-    file.write(Name)
-    file.write("\n")
-    file.close()
 #내가 잘 모르는 내용
 def real_chart(df,company):
     #고급 차트 생성
@@ -97,25 +96,3 @@ def real_chart(df,company):
     )
     fig.write_html("./templates/chart.html")
 
-
-#코인 가격 형식화 후 리스트로 저장
-def price_correct(coinlist,content):
-    coinprice=[]
-    for name in coinlist:
-        if(content[name]>100):
-            coinprice.append(format(int("{:.0f}".format(content[name])),',')+"원")
-        else:
-            coinprice.append("{:.2f}".format(content[name])+"원")
-    return coinprice
-
-def COIN_made(coinlist,content):
-    COIN = {}
-    #형식화된 코인 이름들 가져오기
-    coinname = namecorrect(coinlist)
-    #형식화된코인 가격들 가져오기
-    coinprice = pricecorrect(coinlist, content)
-    #딕셔너리 형태로 이름과 가격 저장
-    for i in range(len(coinname)):
-        COIN[coinname[i]]=coinprice[i]
-
-    return COIN

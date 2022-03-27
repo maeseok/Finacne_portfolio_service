@@ -107,12 +107,6 @@ def basic_chart(df,Name):
     plt.ylabel('Close')
     src="./static/assets/img/"
     plt.savefig(src+Name + ".png")
-    
-    chartpath= "/nomadcoders/boot/DB/chart.txt"
-    file = open(chartpath, 'a')
-    file.write(Name)
-    file.write("\n")
-    file.close()
 
 #내가 잘 모르는 내용
 def real_chart(df,company):

@@ -411,10 +411,6 @@ def portfolioReturn():
 def portfolioInit():
     return render_template("/portfolioInit.html")
 
-@app.route("/test")
-def test():
-    return render_template("/file.html")
-
 #포트폴리오 초기화
 @app.route("/portfolio/init_return")
 def portfolioInit_return():

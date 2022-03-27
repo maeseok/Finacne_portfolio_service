@@ -103,25 +103,20 @@
           </div>
         </div>
         <form action="/inquiry/coinrate" method="get">
+          <div class="select text-center">
+            <input type="radio" value="KRW" name="moneyValue" id="moneyvalue" />
+            <label for="moneyvalue">KRW</label>
+            <input
+              type="radio"
+              value="USD"
+              name="moneyValue"
+              id="moneyvalue2"
+            />
+            <label for="moneyvalue2">USD</label>
+          </div>
           <!-- Page Features-->
           <div class="row gx-lg-5">
             <div class="card bg-light border-0 h-100">
-              <label
-                ><input
-                  type="radio"
-                  value="KRW"
-                  name="moneyValue"
-                  id="moneyvalue"
-                />원화</label
-              >
-              <label
-                ><input
-                  type="radio"
-                  value="USD"
-                  name="moneyValue"
-                  id="moneyvalue"
-                />달러</label
-              >
               <!--text정렬-->
               <div class="card-body text-center p-4 p-lg-5 pt-0 pt-lg-0">
                 <input

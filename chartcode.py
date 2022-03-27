@@ -54,12 +54,6 @@ def make_basic_chart(df,company):
     #차트 이미지로 저장
     src="./static/assets/img/"
     plt.savefig(src+company + ".png")
-    
-    chartpath= "/nomadcoders/boot/DB/chart.txt"
-    file = open(chartpath, 'a')
-    file.write(company)
-    file.write("\n")
-    file.close()
 
 #한국 수익률 형식화 함수
 def KRX_yield(df_KRX,Name,firstdate,lastdate):
