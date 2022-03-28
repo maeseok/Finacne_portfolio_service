@@ -10,6 +10,7 @@ import portfolio as p
 import chartcode as c
 import COIN
 import US
+import stockIndex
 #로그 관리 
 import logging
 
@@ -21,7 +22,10 @@ CODE=db_connect()
 #대표 화면
 @app.route("/main")
 def home():
-    return render_template("index.html")
+    df_index = stockIndex.indexdf_made()
+    kospi = "코스피"
+    US.basic_chart(df_index, kospi)
+    return render_template("index.html",index=kospi)
 
 @app.route("/")
 def main():

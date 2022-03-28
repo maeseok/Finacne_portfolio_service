@@ -55,10 +55,15 @@ def coin_rate(moneyvalue,coinitem,df):
     #날짜와 코인 이름, 현재 가격을 추가
     coinrate.append(nowDATE)
     coinrate.append(coinitem+"("+moneyvalue+")")
-    coinrate.append("{0:,.0f}".format(lastrate)+"원")
-    #변동 계산 및 추가
     gap = "{0:,.0f}".format(lastrate-firstrate)
-    coinrate.append(gap+"원")
+    if(moneyvalue == "KRW"):
+         #변동 계산 및 추가
+        coinrate.append("{0:,.0f}".format(lastrate)+"원")
+        coinrate.append(gap+"원")
+    elif(moneyvalue == "USD"):
+         #변동 계산 및 추가
+        coinrate.append("$"+"{0:,.0f}".format(lastrate))
+        coinrate.append("$"+gap)
     #수익률 계산 및 추가
     profit = "{:.2f}".format((lastrate-firstrate)/firstrate*100)
     coinrate.append("{0:,}".format(float(profit))+"%")
