@@ -3,6 +3,7 @@ import datetime
 import matplotlib.pyplot as plt
 import pandas as pd
 import plotly.express as px
+import ccxt #라이브러리 임포트 
 
 #코인 이름 한글로 정리
 coin = ["비트코인","이더리움","네오","메탈","라이트코인","리플","이더리움 클래식","오미세고",
@@ -16,6 +17,28 @@ coin = ["비트코인","이더리움","네오","메탈","라이트코인","리�
 "보라","저스트","크로노스","톤","스와이프","헌트","플레이댑","폴카닷","세럼","엠블","스트라티스","알파쿼크","골렘","썸씽","메타",
 "피르마체인","코박 토큰","샌드박스","휴먼스케이프","도지","스트라이크","펀디엑스","플로우","던프로토콜","엑시","스택스","이캐시","솔라나",
 "폴리곤","누사이퍼","에이브","1인치","알고랜드","니어프로토콜","위믹스","아발란체","티"]
+
+#USD df 생성 (해야함)
+def usd_made():
+    exchange = ccxt.binance() #바이낸스 객체 생성
+    exchange.fetch_tickers() #티커의 각종 정보를 딕셔너리로 불러옴 
+    ticker = list(exchange.fetch_tickers().keys()) #딕셔너리의 key값만 뽑아내서 리스트로 만들
+    USDT_ticker = [] 
+    import re 
+    p = re.compile(r'\w+[/]USDT')
+    for i in ticker:
+        if p.match(i) and 'UP' not in i and 'DOWN' not in i: #레버리지토큰 필터링을 위함
+            USDT_ticker.append(i)
+    print(USDT_ticker)
+# 해야함
+def get_df_binance(ticker,time_interval):
+    data = exchange.fetch_ohlcv(ticker,time_interval) #값이 리스트로 반환된다 
+    df = pd.DataFrame(data) #데이터프레임으로 만든다 
+    df.columns = (['Date','Open','High','Low','Close','Volume']) #컬럼 지정
+    def parse_dates(ts):
+        return datetime.datetime.fromtimestamp(ts/1000.0) #타임스탬프를 시간형식으로 전환 
+    df['Date'] = df['Date'].apply(parse_dates) #Date컬럼에 적용 
+    return df #데이터프레임 반환
 
 #현재 시간 불러오는 함수
 def time_format():
