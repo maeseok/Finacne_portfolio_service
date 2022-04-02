@@ -52,19 +52,15 @@ def coinreturn():
     #try:
     moneyvalue = request.args.get('moneyValue')
     coinname = request.args.get('coinname')
-    date = request.args.get('date')
-    #날짜 계산 형식
     now = datetime.datetime.now()
-    month=int(now.strftime('%m'))
-    day = int(now.strftime('%d'))
-    #2022년일 때 가져올 데이터 개수 계산
-    if(date!="2022"):
-        date = (2022-int(date))*365
-    elif(date=="2022"):
-        date = (month-1)*30+day
-    df_coin= COIN.coin_connect(moneyvalue,coinname,date)
-    coinrate = COIN.coin_rate(moneyvalue,coinname,df_coin)
-    COIN.basic_chart(df_coin, coinname)
+    if(moneyvalue== "KRW"):
+        df_coin= COIN.coin_connect(moneyvalue,coinname,500)
+        coinrate = COIN.coin_rate(moneyvalue,coinname,df_coin)
+    elif(moneyvalue == "USD"):
+        ticker = COIN.usd_connect(coinname)
+        df_coin = COIN.get_df_binance(ticker, "1d")
+        coinrate = COIN.coin_rate(moneyvalue, coinname, df_coin)
+    COIN.basic_chart(df_coin, coinname,moneyvalue)
     COIN.real_chart(df_coin,coinname)
     #except:
         #return redirect("/")
