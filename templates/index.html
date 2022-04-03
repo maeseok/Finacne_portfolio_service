@@ -61,7 +61,7 @@
                   <a href="/inquiry/nasdaq">미국주식) 나스닥 조회</a>
                   <a href="/inquiry/nyse">미국주식) 뉴욕 조회</a>
                   <a href="/inquiry/amex">미국주식) 아맥스 조회</a>
-                  <a href="/inquiry/coin">비트코인) 시세</a>
+                  <a href="/inquiry/coin">비트코인) 시세 조회</a>
                 </div>
               </div>
             </li>
@@ -90,20 +90,70 @@
     </nav>
     <!-- Header-->
     <header class="py-5">
+      <br />
+      <br />
+      <br />
       <div class="container px-lg-5">
-        <h3 class="display-5 fw-bold text-center">코스피</h3>
-        <img id="chart" src="../static/assets/img/{{index}}.png" />
-        <div class="p-4 p-lg-5 bg-light rounded-3 text-center">
-          <div class="m-4 m-lg-5">
-            <br />
-            <h1 class="display-5 fw-bold">방문을 환영합니다!</h1>
-            <p class="fs-4">
-              우리 사이트에서는 주식 포트폴리오 서비스와 <br />시세 조회
-              서비스를 제공하고 있습니다.<br />
-              회원가입을 통하여 모든 서비스를 무료로 이용하세요.
-            </p>
-            <a class="btn btn-primary btn-lg" href="/login">회원가입</a>
+        <div class="row gx-lg-5">
+          <div class="col-lg-6 col-xxl-4 mb-5">
+            <div class="card bg-light border-0 h-100">
+              <div class="card-body text-center p-4 p-lg-5 pt-0 pt-lg-0">
+                <img
+                  src="../static/assets/img/KOREA.png"
+                  width="100"
+                  title="대한민국 아이콘  제작자: Dighital - Flaticon"
+                />
+                <br />
+                <br />
+                <h2 class="fs-4 fw-bold">KOSPI</h2>
+                <p class="mb-0">{{kospiRate}} KRW</p>
+                <p class="mb-0">{{kospiProfit}}</p>
+                <br />
+              </div>
+            </div>
           </div>
+          <div class="col-lg-6 col-xxl-4 mb-5">
+            <div class="card bg-light border-0 h-100">
+              <div class="card-body text-center p-4 p-lg-5 pt-0 pt-lg-0">
+                <img src="../static/assets/img/US.png" width="100" / title =
+                "미국 아이콘 제작자: Freepik - Flaticon">
+                <br />
+                <br />
+                <h2 class="fs-4 fw-bold">S&P500</h2>
+                <p class="mb-0">{{sp500Rate}} USD</p>
+                <p class="mb-0">{{sp500Profit}}</p>
+                <br />
+                <br />
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-6 col-xxl-4 mb-5">
+            <div class="card bg-light border-0 h-100">
+              <div class="card-body text-center p-4 p-lg-5 pt-0 pt-lg-0">
+                <img src="../static/assets/img/COIN.png" width="100" / title =
+                "비트 코인 아이콘 제작자: adriansyah - Flaticon">
+                <br />
+                <br />
+                <h2 class="fs-4 fw-bold">비트코인</h2>
+                <p class="mb-0">{{coinRate}} KRW</p>
+                <p class="mb-0">{{coinProfit}}</p>
+                <br />
+                <br />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="p-4 p-lg-5 bg-light rounded-3 text-center">
+        <div class="m-4 m-lg-5">
+          <br />
+          <h1 class="display-5 fw-bold">방문을 환영합니다!</h1>
+          <p class="fs-4">
+            우리 사이트에서는 주식 포트폴리오 서비스와 <br />시세 조회 서비스를
+            제공하고 있습니다.<br />
+            회원가입을 통하여 모든 서비스를 무료로 이용하세요.
+          </p>
+          <a class="btn btn-primary btn-lg" href="/login">회원가입</a>
         </div>
       </div>
     </header>
@@ -123,15 +173,16 @@
                 <h2 class="fs-4 fw-bold">코드 다운로드</h2>
                 <p class="mb-0">
                   포트폴리오와 시세 조회에 사용된 <br />
-                  파이썬 코드를 무료로 다운로드 할 수 있습니다.
+                  코드를 무료로 다운로드 할 수 있습니다.
                 </p>
+                <br />
                 <br />
                 <a
                   id="gitDownloadIcon"
                   class="btn btn-primary btn-lg"
                   href="https://github.com/maeseok/FIANCE_PORTFOLIO_API-PAGE"
                   target="_blank"
-                  >download</a
+                  >Download</a
                 >
               </div>
             </div>
@@ -146,7 +197,7 @@
                 </div>
                 <h2 class="fs-4 fw-bold">포트폴리오</h2>
                 <p class="mb-0">
-                  주식 포트폴리오 사용 방법에 대한 <br />설명을 볼 수 있습니다.
+                  주식 포트폴리오 서비스를 <br />이용하실 수 있습니다.
                 </p>
                 <br />
                 <br />
@@ -154,7 +205,7 @@
                   id="portfolioExplainIcon"
                   class="btn btn-primary btn-lg"
                   href="/port_explain"
-                  >explain</a
+                  >바로가기</a
                 >
               </div>
             </div>
@@ -169,7 +220,7 @@
                 </div>
                 <h2 class="fs-4 fw-bold">시세 조회</h2>
                 <p class="mb-0">
-                  시세 조회 사용 방법에 대한 설명을 <br />볼 수 있습니다.
+                  시세 조회 서비스를 <br />이용하실 수 있습니다.
                 </p>
                 <br />
                 <br />
@@ -177,7 +228,7 @@
                   id="inquiryExplainIcon"
                   class="btn btn-primary btn-lg"
                   href="/inqu_explain"
-                  >explain</a
+                  >바로가기</a
                 >
               </div>
             </div>
@@ -189,7 +240,7 @@
     <footer id="main-footer" class="py-5 bg-dark">
       <div class="container">
         <p class="m-0 text-center text-white">
-          Copyright &copy; Made by maeseok 2022
+          Copyright 2022. maeseok all rights reserved.
         </p>
       </div>
     </footer>

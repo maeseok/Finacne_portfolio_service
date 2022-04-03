@@ -372,12 +372,12 @@ def time_format():
     except:
         print("알림 : <현재 시간을 불러오는 중 오류가 발생했습니다.")
 
-# 1. timestamp로 변환
-def to_mstimestamp(str):
-    str = datetime.datetime.strptime(str, "%Y-%m-%d %H:%M:%S")
-    str = datetime.datetime.timestamp(str)
-    str = int(str) * 1000
-    return str
+#timestamp로 변환
+def to_mstimestamp(stamp):
+    stamp = datetime.datetime.strptime(str, "%Y-%m-%d %H:%M:%S")
+    stamp = datetime.datetime.timestamp(str)
+    stamp = int(stamp) * 1000
+    return stamp
 
 #USDT 종목 생성
 def usd_made():
@@ -385,7 +385,6 @@ def usd_made():
     exchange.fetch_tickers() #티커의 각종 정보를 딕셔너리로 불러옴 
     ticker = list(exchange.fetch_tickers().keys()) #딕셔너리의 key값만 뽑아내서 리스트로 만들
     USDT_ticker = [] 
-    TICKER = ""
     p = re.compile(r'\w+[/]USDT')
     for i in ticker:
         if p.match(i) and 'UP' not in i and 'DOWN' not in i: #레버리지토큰 필터링을 위함
@@ -396,7 +395,6 @@ def usd_made():
         file.write(i)
         file.write("\n")
     file.close()
-    return USDT_ticker
 
 def usd_connect(coinname):
     path="/nomadcoders/boot/DB/usdcode.txt"

@@ -22,10 +22,11 @@ CODE=db_connect()
 #대표 화면
 @app.route("/main")
 def home():
-    df_index = stockIndex.indexdf_made()
-    kospi = "코스피"
-    US.basic_chart(df_index, kospi)
-    return render_template("index.html",index=kospi)
+    kospi_rate,kospi_profit= stockIndex.index_made("KS11")
+    sp500_rate,sp500_profit = stockIndex.index_made("US500")
+    coin_rate,coin_profit = stockIndex.coin_index()
+    return render_template("index.html",kospiRate = kospi_rate, sp500Rate = sp500_rate, kospiProfit = kospi_profit,sp500Profit = sp500_profit,
+    coinRate = coin_rate, coinProfit = coin_profit)
 
 @app.route("/")
 def main():
@@ -49,21 +50,20 @@ def coininquiry():
 #코인 시세 결과
 @app.route("/inquiry/coinrate")
 def coinreturn():
-    #try:
-    moneyvalue = request.args.get('moneyValue')
-    coinname = request.args.get('coinname')
-    now = datetime.datetime.now()
-    if(moneyvalue== "KRW"):
-        df_coin= COIN.coin_connect(moneyvalue,coinname,500)
-        coinrate = COIN.coin_rate(moneyvalue,coinname,df_coin)
-    elif(moneyvalue == "USD"):
-        ticker = COIN.usd_connect(coinname)
-        df_coin = COIN.get_df_binance(ticker, "1d")
-        coinrate = COIN.coin_rate(moneyvalue, coinname, df_coin)
-    COIN.basic_chart(df_coin, coinname,moneyvalue)
-    COIN.real_chart(df_coin,coinname)
-    #except:
-        #return redirect("/")
+    try:
+        moneyvalue = request.args.get('moneyValue')
+        coinname = request.args.get('coinname')
+        if(moneyvalue== "KRW"):
+            df_coin= COIN.coin_connect(moneyvalue,coinname,500)
+            coinrate = COIN.coin_rate(moneyvalue,coinname,df_coin)
+        elif(moneyvalue == "USD"):
+            ticker = COIN.usd_connect(coinname)
+            df_coin = COIN.get_df_binance(ticker, "1d")
+            coinrate = COIN.coin_rate(moneyvalue, coinname, df_coin)
+        COIN.basic_chart(df_coin, coinname,moneyvalue)
+        COIN.real_chart(df_coin,coinname)
+    except:
+        return redirect("/")
     return render_template("inquiryCoinrate.html",searchingBy=coinname,stockRate=coinrate)
 #포트폴리오 
 @app.route("/portfolio")
