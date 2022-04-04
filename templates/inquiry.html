@@ -107,22 +107,28 @@
       <div class="container px-lg-5">
         <!-- Page Features-->
         <div class="row gx-lg-5">
-          <div class="col-lg-6 col-xxl-4 mb-5">
-            <div class="card bg-light border-0 h-100">
+          <div class="col-lg-6 col-xxl-4 mb-5 m-xxl-0">
+            <div id="login-content" class="card bg-light border-0 h-100">
               <div class="card-body text-center p-4 p-lg-5 pt-0 pt-lg-0">
                 <div
                   class="feature bg-primary bg-gradient text-white rounded-3 mb-4 mt-n4"
                 >
-                  <i class="bi bi-graph-up"></i>
+                  <!--getbootstrap-->
+                  <i class="bi bi-arrow-clockwise"></i>
                 </div>
-                <h2 class="fs-4 fw-bold">오늘의 시세 조회</h2>
+                <h2 class="fs-4 fw-bold">한국주식) 시세 조회</h2>
+                <p class="mb-0">
+                  코스피와 코스닥을 포함한 종목의 <br />시세 및 차트 조회가
+                  가능합니다.
+                </p>
                 <br />
                 <a
-                  id="todayIcon"
+                  id="inquiryIcon"
                   class="btn btn-primary btn-lg"
                   href="/inquiry/search"
-                  >inquiry</a
+                  >바로 가기</a
                 >
+                <br /><br />
               </div>
             </div>
           </div>
@@ -132,15 +138,19 @@
                 <div
                   class="feature bg-primary bg-gradient text-white rounded-3 mb-4 mt-n4"
                 >
-                  <i class="bi bi-bar-chart-steps"></i>
+                  <i class="bi bi-patch-plus-fill"></i>
                 </div>
-                <h2 class="fs-4 fw-bold">수익률 조회</h2>
+                <h2 class="fs-4 fw-bold">한국주식) 수익률 조회</h2>
+                <p class="mb-0">
+                  구매한 주식의 수익률을<br />
+                  검색할 수 있습니다.
+                </p>
                 <br />
                 <a
                   id="returnIcon"
                   class="btn btn-primary btn-lg"
                   href="/inquiry/return"
-                  >inquiry</a
+                  >바로 가기</a
                 >
               </div>
             </div>
@@ -151,15 +161,86 @@
                 <div
                   class="feature bg-primary bg-gradient text-white rounded-3 mb-4 mt-n4"
                 >
-                  <i class="bi bi-book-fill"></i>
+                  <i class="bi bi-currency-dollar"></i>
                 </div>
-                <h2 class="fs-4 fw-bold">포트폴리오</h2>
+                <h2 class="fs-4 fw-bold">미국주식) 나스닥 조회</h2>
+                <p class="mb-0">
+                  미국 나스닥 종목의 <br />시세 및 차트 조회가 가능합니다.
+                </p>
                 <br />
                 <a
-                  id="portfolioIcon"
+                  id="nasdaqIcon"
                   class="btn btn-primary btn-lg"
-                  href="/portfolio"
-                  >portfolio</a
+                  href="/inquiry/nasdaq"
+                  >바로 가기</a
+                >
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-6 col-xxl-4 mb-5">
+            <div class="card bg-light border-0 h-100">
+              <div class="card-body text-center p-4 p-lg-5 pt-0 pt-lg-0">
+                <div
+                  class="feature bg-primary bg-gradient text-white rounded-3 mb-4 mt-n4"
+                >
+                  <i class="bi bi-currency-exchange"></i>
+                </div>
+                <h2 class="fs-4 fw-bold">미국주식) 뉴욕거래소 조회</h2>
+                <p class="mb-0">
+                  미국 뉴욕 증권거래소 종목의 <br />시세 및 차트 조회가
+                  가능합니다.
+                </p>
+                <br />
+                <a
+                  id="nyseIcon"
+                  class="btn btn-primary btn-lg"
+                  href="/inquiry/nyse"
+                  >바로 가기</a
+                >
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-6 col-xxl-4 mb-5">
+            <div class="card bg-light border-0 h-100">
+              <div class="card-body text-center p-4 p-lg-5 pt-0 pt-lg-0">
+                <div
+                  class="feature bg-primary bg-gradient text-white rounded-3 mb-4 mt-n4"
+                >
+                  <i class="bi bi-gem"></i>
+                </div>
+                <h2 class="fs-4 fw-bold">미국주식) 아멕스 조회</h2>
+                <p class="mb-0">
+                  미국 아멕스 종목의 <br />시세 및 차트 조회가 가능합니다.
+                </p>
+                <br />
+                <a
+                  id="amexIcon"
+                  class="btn btn-primary btn-lg"
+                  href="/inquiry/amex"
+                  >바로 가기</a
+                >
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-6 col-xxl-4 mb-5">
+            <div class="card bg-light border-0 h-100">
+              <div class="card-body text-center p-4 p-lg-5 pt-0 pt-lg-0">
+                <div
+                  class="feature bg-primary bg-gradient text-white rounded-3 mb-4 mt-n4"
+                >
+                  <i class="bi bi-currency-bitcoin"></i>
+                </div>
+                <h2 class="fs-4 fw-bold">비트코인) 시세 조회</h2>
+                <p class="mb-0">
+                  비트코인을 포함한 코인의 <br />
+                  시세 및 차트 조회가 가능합니다.
+                </p>
+                <br />
+                <a
+                  id="coinIcon"
+                  class="btn btn-primary btn-lg"
+                  href="/inquiry/coin"
+                  >바로 가기</a
                 >
               </div>
             </div>

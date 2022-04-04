@@ -12723,10 +12723,10 @@ fieldset:disabled .btn {
 .select {
   padding: 15px 10px;
 }
-.select input[type=radio]{
+.select input[type="radio"] {
   display: none;
 }
-.select input[type=radio]+label{
+.select input[type="radio"] + label {
   display: inline-block;
   cursor: pointer;
   height: 24px;
@@ -12734,14 +12734,19 @@ fieldset:disabled .btn {
   border: 1px solid #333;
   line-height: 24px;
   text-align: center;
-  font-weight:bold;
-  font-size:13px;
+  font-weight: bold;
+  font-size: 13px;
 }
-.select input[type=radio]+label{
+.select input[type="radio"] + label {
   background-color: #fff;
   color: #333;
 }
-.select input[type=radio]:checked+label{
+.select input[type="radio"]:checked + label {
   background-color: #333;
   color: #fff;
+}
+
+.main-sign {
+  position: relative;
+  left: 5vw;
 }

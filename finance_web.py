@@ -35,10 +35,6 @@ def main():
 @app.route("/port_explain")
 def port_explain():
     return render_template("port_explain.html")
-#시세 조회 이용 설명
-@app.route("/inqu_explain")
-def inqu_explain():
-    return render_template("inqu_explain.html")
 #시세 조회
 @app.route("/inquiry")
 def inquiry():
