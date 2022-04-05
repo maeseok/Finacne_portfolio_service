@@ -14,7 +14,6 @@ import US
 #한국 가격 형식화 함수
 def KRX_rate(df_KRX,Name):
     nowDATE = US.time_format()
-
     symbol = df_KRX[df_KRX.Name==Name].Symbol.values[0].strip()
     rate = fdr.DataReader(symbol,nowDATE[:7])
     rate = rate[['Close','Change']]

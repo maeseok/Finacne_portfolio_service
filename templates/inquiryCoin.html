@@ -41,7 +41,7 @@
     <!-- Responsive navbar-->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
       <div class="container px-lg-5">
-        <a class="navbar-brand" href="/main">Finance Portfolio</a>
+        <a class="navbar-brand" href="/">Finance Portfolio</a>
         <button
           class="navbar-toggler"
           type="button"
@@ -54,15 +54,17 @@
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+          <ul class="navbar-nav my-auto mb-2 mb-lg-0">
             <li class="nav-item">
               <a class="nav-link active" aria-current="page" href="/main"
-                >Home</a
+                ><i class="bi bi-house-fill"></i> Home</a
               >
             </li>
             <li class="nav-item" id="inqu">
               <div class="dropdown">
-                <a class="nav-link" href="#">Inquiry</a>
+                <a class="nav-link" href="#"
+                  ><i class="bi bi-search"></i> Inquiry</a
+                >
                 <div class="dropdown-content" id="inqu-menu">
                   <a href="/inquiry/search">한국주식) 시세 조회</a>
                   <a href="/inquiry/return">한국주식) 수익률 조회</a>
@@ -75,7 +77,9 @@
             </li>
             <li class="nav-item" id="port">
               <div class="dropdown">
-                <a class="nav-link" href="#">Portfolio</a>
+                <a class="nav-link" href="#"
+                  ><i class="bi bi-book"></i> Portfolio</a
+                >
                 <div class="dropdown-content" id="port-menu">
                   <a href="/portfolio/buy">종목 매수</a>
                   <a href="/portfolio/sell">종목 매도</a>
@@ -86,11 +90,25 @@
             </li>
             <li class="nav-item" id="init">
               <div class="dropdown">
-                <a class="nav-link" href="#">Initialize</a>
+                <a class="nav-link" href="#"
+                  ><i class="bi bi-exclamation-triangle"></i> Initialize</a
+                >
                 <div class="dropdown-content" id="init-menu">
                   <a href="/portfolio/init">포트폴리오 초기화</a>
                 </div>
               </div>
+            </li>
+          </ul>
+          <ul class="nav navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="/login"
+                ><i class="bi bi-box-arrow-right"></i> Log In</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="/new"
+                ><i class="bi bi-person-plus-fill"></i> Sign Up</a
+              >
             </li>
           </ul>
         </div>

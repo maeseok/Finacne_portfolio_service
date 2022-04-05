@@ -17,7 +17,6 @@ import logging
 logging.basicConfig(filename = "./logs/test.log", level = logging.DEBUG)
 nowDATE = time_format()
 app = Flask("Finance Portfolio")
-CODE=db_connect()
 
 #대표 화면
 @app.route("/main")
@@ -161,15 +160,15 @@ def inquiryReturn():
 #종목 수익률 출력
 @app.route("/inquiry/stock_return")
 def stock_return():
-    #try:
-    stocks = request.args.get('stocks')
-    firstdate = request.args.get('purchase_date')
-    lastdate = request.args.get('sale_date')
-    df_krx = c.KRX_connect()
-    KRX = c.KRX_yield(df_krx, stocks, firstdate, lastdate)
-    return render_template("inquiryStock_return.html",KRX=KRX)
-    #except:
-        #return redirect("/")
+    try:
+        stocks = request.args.get('stocks')
+        firstdate = request.args.get('purchase_date')
+        lastdate = request.args.get('sale_date')
+        df_krx = c.KRX_connect()
+        KRX = c.KRX_yield(df_krx, stocks, firstdate, lastdate)
+        return render_template("inquiryStock_return.html",KRX=KRX)
+    except:
+        return redirect("/")
 
 #종목 매수 정보 입력
 @app.route("/portfolio/buy")
@@ -185,8 +184,10 @@ def portfolioBuy_return():
     file = open(path, 'a')
     global checkCode
     checkCode="0"
-    code = only_code_made(CODE, name)
-    if code:
+    df_krx = c.KRX_connect()
+    symbol = df_krx[df_krx.Name==name].Symbol.values[0].strip()
+    print(symbol)
+    if symbol:
         price = request.args.get('price')
         number = request.args.get('number')
         #이미 매수한 종목인지 확인
@@ -196,7 +197,7 @@ def portfolioBuy_return():
             checkCode ="1"
         else:
             #새로 저장
-            if(code):
+            if(symbol):
                 p.buy_save(name, price, number)
                 checkCode ="2"
             else:
@@ -241,8 +242,9 @@ def portfolioSell_return():
     check = "0"
     path="/nomadcoders/boot/DB/check.txt"
     file = open(path, 'a')
-    code = only_code_made(CODE, sellname)
-    if code:
+    df_krx = c.KRX_connect()
+    symbol = df_krx[df_krx.Name==sellname].Symbol.values[0].strip()
+    if symbol:
         for i in range(0,len(buycollect)):
             if(buycollect[i] == sellname):
                 saveprice = buycollect[i+1]
@@ -341,7 +343,8 @@ def portfolioInquiry():
                     #매도 내용이 없으면 현재 수량을 남은 수량으로 저장
                     Buyremain = Buyinfor[j+2]
                 #최종적으로 종목을 출력 형식에 맞게 값을 변형시킴
-                get_code = only_code_made(CODE,Buyitem[i])   
+                df_krx = c.KRX_connect()
+                get_code = df_krx[df_krx.Name==Buyitem[i]].Symbol.values[0].strip()  
                 get_profit, get_presentrate, get_presentprofit,get_ptotal,get_ltotal = p.present_rate(get_code,Buyitem[i],Buyinfor[j+1],Buyremain) 
                 ptotal.append(get_ptotal)
                 ltotal.append(get_ltotal)
