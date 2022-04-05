@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ko" class="no-js">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta
+      name="description"
+      content="finance FINANCE inquiry INQUIRY maeseok PORTFOLIO portfolio"
+    />
+    <title>FINANCE PORTFOLIO</title>
+    <meta
+      name="description"
+      content="An interactive pixel distortion effect made with Three.js "
+    />
+    <meta
+      name="keywords"
+      content="webgl, three.js, pixel, distortion, pixelated, javascript"
+    />
+    <meta name="author" content="Codrops" />
+    <link rel="shortcut icon" href="../static/assets/bank.svg" />
+    <link rel="stylesheet" href="https://use.typekit.net/oxr3hup.css" />
+    <link rel="stylesheet" type="text/css" href="../static/css/base.css" />
+    <script>
+      document.documentElement.className = "js";
+      var supportsCssVars = function () {
+        var e,
+          t = document.createElement("style");
+        return (
+          (t.innerHTML = "root: { --tmp-var: bold; }"),
+          document.head.appendChild(t),
+          (e = !!(
+            window.CSS &&
+            window.CSS.supports &&
+            window.CSS.supports("font-weight", "var(--tmp-var)")
+          )),
+          t.parentNode.removeChild(t),
+          e
+        );
+      };
+      supportsCssVars() ||
+        alert(
+          "Please view this demo in a modern browser that supports CSS Variables."
+        );
+    </script>
+    <script src="//tympanus.net/codrops/adpacks/analytics.js"></script>
+  </head>
+  <body class="demo-1">
+    <main>
+      <div class="frame">
+        <div class="frame__title-wrap">
+          <h1 class="frame__title">몽 스 타 그 램</h1>
+          <p class="frame__tagline">@lee.mongmong</p>
+        </div>
+      </div>
+      <div
+        id="canvasContainer"
+        data-grid="50"
+        data-mouse="0.25"
+        data-strength="0.11"
+      ></div>
+      <div class="content">
+        <br>
+        <div id="quote">
+          <h2></span>
+          <h2 class="content__title3"></span>
+        </div>
+      </div>
+    </main>
+    <script
+      src="https://code.jquery.com/jquery-3.6.0.js"
+      integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://tympanus.net/codrops/adpacks/cda.js"></script>
+    <script type="module" src="../static/js/app.js"></script>
+    <script type="module" src="../static/js/background.js"></script>
+  </body>
+</html>

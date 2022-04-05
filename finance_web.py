@@ -126,7 +126,7 @@ def NyseRate():
         return redirect("/")
     return render_template("inquiryNyserate.html",searchingBy=company,stockRate=stock_rate)
 
-#아맥스오늘의 종목 검색
+#아맥스 종목 검색
 @app.route("/inquiry/amex")
 def AmexSearch():
     return render_template("inquiryAmex.html")
@@ -146,6 +146,28 @@ def AmexRate():
     except:
         return redirect("/")
     return render_template("inquiryAmexrate.html",searchingBy=company,stockRate=stock_rate)
+
+#미국 ETF 종목 검색
+@app.route("/inquiry/etfUS")
+def EtfUS():
+    return render_template("inquiryEtfUS.html")
+
+#미국 ETF 오늘의 시세 출력
+@app.route("/inquiry/etfUSrate")
+def EtfUSrate():
+    try:
+        company = request.args.get('company')
+        date = request.args.get('date')
+        df_etfus = US.ETFUS_connect()
+        stock_rate = US.ETFUS_rate(df_etfus,company)
+        df = US.df_made(df_etfus,company,date)
+        #chart img
+        US.basic_chart(df,company)
+        #chart html
+        US.real_chart(df,company)
+    except:
+        return redirect("/")
+    return render_template("inquiryEtfUSrate.html",searchingBy=company,stockRate=stock_rate)
 
 #고급 차트 출력
 @app.route("/chart")

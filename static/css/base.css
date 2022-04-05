@@ -137,6 +137,7 @@ a:focus-visible {
 
 .frame__links {
   display: inline;
+  text-shadow: 5px 8px 10px black;
 }
 
 .frame__links a:not(:last-child),

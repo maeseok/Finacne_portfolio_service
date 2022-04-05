@@ -12662,6 +12662,7 @@ fieldset:disabled .btn {
 }
 .dropdown:hover .dropdown-content {
   display: block;
+  transition: all ease 0.3s 0s;
 }
 .dropdown:hover .dropbtn {
   background-color: #3e8e41;
@@ -12753,4 +12754,8 @@ fieldset:disabled .btn {
 .main-sign {
   position: relative;
   left: 5vw;
+}
+
+.active:hover {
+  color: blue;
 }
