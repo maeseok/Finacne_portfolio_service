@@ -86,7 +86,7 @@ def AMEX_connect():
     f.close()
     return df_amex
 #ETF/US 가격 생성하는 함수
-def ETFUS_rate(df_etfus,Name):
+def ETFUS_rate(df_etfus,Name,company):
     nowDATE = time_format()
 
     symbol = df_etfus[df_etfus.Name==Name].Symbol.values[0].strip()
@@ -95,7 +95,7 @@ def ETFUS_rate(df_etfus,Name):
     etfusrate = rate[-2:]
     ETFUS = []
     ETFUS.append(nowDATE)
-    ETFUS.append(Name)
+    ETFUS.append(company)
     ETFUS.append('$ '+str(etfusrate['Close'].values[1]))
     gap = "{:.2f}".format(etfusrate['Close'].values[1]-etfusrate['Close'].values[0])
     ETFUS.append('$ '+gap)

@@ -158,16 +158,20 @@ def EtfUSrate():
     try:
         company = request.args.get('company')
         date = request.args.get('date')
+        name = ""
+        for i in range(len(company)):
+            if company[i] == "[":
+                name = company[:i]
         df_etfus = US.ETFUS_connect()
-        stock_rate = US.ETFUS_rate(df_etfus,company)
-        df = US.df_made(df_etfus,company,date)
+        stock_rate = US.ETFUS_rate(df_etfus,name,company)
+        df = US.df_made(df_etfus,name,date)
         #chart img
-        US.basic_chart(df,company)
+        US.basic_chart(df,name)
         #chart html
-        US.real_chart(df,company)
+        US.real_chart(df,name)
     except:
         return redirect("/")
-    return render_template("inquiryEtfUSrate.html",searchingBy=company,stockRate=stock_rate)
+    return render_template("inquiryEtfUSrate.html",searchingBy=name,stockRate=stock_rate)
 
 #고급 차트 출력
 @app.route("/chart")
