@@ -1,4 +1,4 @@
-$(function () {
+https: $(function () {
   //화면 로딩후 시작
   $("#stock-input").autocomplete({
     //오토 컴플릿트 시작

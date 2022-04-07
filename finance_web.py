@@ -206,13 +206,15 @@ def portfolioBuy():
 def portfolioBuy_return():
     get_buycollect = p.buy_open()
     name = request.args.get('name')
+    moneyvalue = request.args.get('moneyValue')
     path="/nomadcoders/boot/DB/check.txt"
     file = open(path, 'a')
     global checkCode
     checkCode="0"
     df_krx = c.KRX_connect()
     symbol = df_krx[df_krx.Name==name].Symbol.values[0].strip()
-    print(symbol)
+    name = name + moneyvalue
+    print(name)
     if symbol:
         price = request.args.get('price')
         number = request.args.get('number')
@@ -261,44 +263,49 @@ def portfolioSell():
 #종목 매도 처리
 @app.route("/portfolio/sell_return")
 def portfolioSell_return():
-    buycollect = p.buy_open()
-    sellname = request.args.get('name2')
-    sellprice = request.args.get('price2')
-    sellnumber = request.args.get('number2')
-    check = "0"
-    path="/nomadcoders/boot/DB/check.txt"
-    file = open(path, 'a')
-    df_krx = c.KRX_connect()
-    symbol = df_krx[df_krx.Name==sellname].Symbol.values[0].strip()
-    if symbol:
-        for i in range(0,len(buycollect)):
-            if(buycollect[i] == sellname):
-                saveprice = buycollect[i+1]
-                savenumber = buycollect[i+2]
-                remainprice = int(sellprice) - int(saveprice)
-                #매도량과 종목이름 저장
-                p.stock_item_save(sellname, sellnumber)
-                #매도량이 매수량보다 많은지 확인
-                checkcode = p.stock_item_check(sellname, savenumber)
+    try:
+        buycollect = p.buy_open()
+        sellname = request.args.get('name2')
+        sellprice = request.args.get('price2')
+        sellnumber = request.args.get('number2')
+        moneyvalue = request.args.get('moneyValue')
+        check = "0"
+        path="/nomadcoders/boot/DB/check.txt"
+        checkcode = ""
+        file = open(path, 'a')
+        df_krx = c.KRX_connect()
+        symbol = df_krx[df_krx.Name==sellname].Symbol.values[0].strip()
+        if symbol:
+            for i in range(0,len(buycollect)):
+                if(buycollect[i] == sellname):
+                    saveprice = buycollect[i+1]
+                    savenumber = buycollect[i+2]
+                    remainprice = int(sellprice) - int(saveprice)
+                    #매도량과 종목이름 저장
+                    p.stock_item_save(sellname, sellnumber)
+                    #매도량이 매수량보다 많은지 확인
+                    checkcode = p.stock_item_check(sellname, savenumber)
+                else:
+                    pass
+                #정상
+            if(checkcode == 1):
+                #매도한 정보 저장
+                p.sell_save(sellname, sellprice, sellnumber)
+                #수익률 정보 저장
+                p.profit_and_loss(sellname, saveprice, sellprice, remainprice, sellnumber)
+                check ="1"
+            #매도량이 매수량을 넘음
             else:
-                pass
-            #정상
-        if(checkcode == 1):
-            #매도한 정보 저장
-            p.sell_save(sellname, sellprice, sellnumber)
-            #수익률 정보 저장
-            p.profit_and_loss(sellname, saveprice, sellprice, remainprice, sellnumber)
-            check ="1"
-        #매도량이 매수량을 넘음
+                #추가되어서 넘친 매도량 삭제
+                p.stock_item_correct(sellname)
+                check="2"
+                print("알림 : <매도 수량을 다시입력해주세요>")
         else:
-            #추가되어서 넘친 매도량 삭제
-            p.stock_item_correct(sellname)
-            check="2"
-            print("알림 : <매도 수량을 다시입력해주세요>")
-    else:
-        return redirect("/")
-    file.write(check)
-    file.close()
+            return redirect("/")
+        file.write(check)
+        file.close()
+    except:
+        return redirect("/portfolio")
     return render_template("portfolioSell_return.html")
 
 #종목 매도 완료

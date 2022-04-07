@@ -2,25 +2,10 @@ from bs4 import BeautifulSoup
 import requests
 import urllib.request as req
 
-#현재 시세만 불러오는 함수
+#현재 시세만 불러오는 함수(라이브러리 사용)
 def present_rate(code,item,frate,number):
     try:
-        #봇이 아님을 증명하는 값
-        headers = {'User-Agent' : 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36 Edg/92.0.902.62'}
-        
-        value=[]
-        url="https://finance.naver.com/item/sise_day.nhn?code="+code+"&page=1"
-        data = requests.get(url,headers=headers)            
-        soup = BeautifulSoup(data.text, 'html.parser')
-        #시세 정보 수집
-        eventvalue = soup.find_all('span','tah p11')
-
-        #필요없는 값 제거
-        for i in range(0,len(eventvalue)):
-            if (eventvalue[i].get_text() != "0"):
-                value.append(eventvalue[i].get_text())
-            else :
-                pass                        
+        value = []             
         firstrate=frate
         lastrate=value[0].replace(",","")
         lrate = value[0]   
@@ -235,3 +220,40 @@ def portfolio_initialize(stock_item):
         file.close() 
     except:
         print("알림 : <포트폴리오 초기화 중 오류가 발생했습니다.>")
+
+
+#현재 시세만 불러오는 함수(크롤링 코드로 현재 사용 x)
+#def present_rate(code,item,frate,number):
+    #try:
+        #봇이 아님을 증명하는 값
+        #headers = {'User-Agent' : 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36 Edg/92.0.902.62'}
+        
+        #value=[]
+        #url="https://finance.naver.com/item/sise_day.nhn?code="+code+"&page=1"
+        #data = requests.get(url,headers=headers)            
+        #soup = BeautifulSoup(data.text, 'html.parser')
+        #시세 정보 수집
+        #eventvalue = soup.find_all('span','tah p11')
+
+        #필요없는 값 제거
+        #for i in range(0,len(eventvalue)):
+        #    if (eventvalue[i].get_text() != "0"):
+        #        value.append(eventvalue[i].get_text())
+        #    else :
+        #        pass                        
+        #firstrate=frate
+        #lastrate=value[0].replace(",","")
+        #lrate = value[0]   
+        #last = "현재가 : "+lrate+"원"
+        #rate_gap = int(lastrate) - int(firstrate)
+        #get_prprofit = format(rate_gap * int(number),',')
+        #present_profit = "현재 수익 : "+ get_prprofit+"원"
+        #수익률 계산
+        #rateprofit= rate_gap /int(firstrate)*100
+        #profit = "수익률 : "+"{:0,.2f}".format(rateprofit)+"%"
+        #종목 현재 손익 계산
+        #last_total = int(firstrate)*int(number)
+        #present_total = last_total + rate_gap*int(number)
+        #return profit,last,present_profit,present_total,last_total
+    #except:
+        #print("알림 : <현재 시세를 불러오는 중 오류가 발생했습니다.>")

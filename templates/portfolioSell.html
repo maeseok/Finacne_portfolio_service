@@ -125,6 +125,26 @@
           </div>
         </div>
         <form action="/portfolio/sell_return" method="get">
+          <div class="select text-center">
+            <input type="radio" value="KRW" name="moneyValue" id="moneyvalue" />
+            <label for="moneyvalue">한국주식</label>
+            <input
+              type="radio"
+              value="USD"
+              name="moneyValue"
+              id="moneyvalue2"
+              required
+            />
+            <label for="moneyvalue2">미국주식(ETF)</label>
+            <input
+              type="radio"
+              value="BTC"
+              name="moneyValue"
+              id="moneyvalue3"
+              required
+            />
+            <label for="moneyvalue3">코인</label>
+          </div>
           <!-- Page Features-->
           <div class="row gx-lg-5">
             <div class="card border-0 h-100 position-all">
