@@ -1,8 +1,10 @@
 from bs4 import BeautifulSoup
 import urllib.request as req
 import requests
-import datetime
-from flask import Flask, render_template,request,redirect
+from datetime import timedelta, datetime
+from flask import Flask, render_template,request,redirect,flash,session,url_for
+from flask_pymongo import PyMongo
+from werkzeug.security import generate_password_hash, check_password_hash
 #내가 만든 모듈
 from basic import db_connect,only_code_made, time_format
 from inquiry import stock_inquiry, rate_import
@@ -11,16 +13,21 @@ import chartcode as c
 import COIN
 import US
 import stockIndex
+import db
 #로그 관리 
 import logging
 
 logging.basicConfig(filename = "./logs/test.log", level = logging.DEBUG)
 nowDATE = time_format()
-app = Flask("Finance Portfolio")
+app = Flask(__name__)
+app.config["MONGO_URI"] = "mongodb+srv://maeseok:didc001@finance.smjhg.mongodb.net/members?retryWrites=true&w=majority"
+app.config["SECRET_KEY"] = "bvWjJlEvRqsOBPnu"
+app.config["PERMANET_SESSION_LIFETIME"] = timedelta(minutes = 1)
+mongo = PyMongo(app)
 
 #대표 화면
 @app.route("/main")
-def home():
+def home():  
     kospi_rate,kospi_profit= stockIndex.index_made("KS11")
     sp500_rate,sp500_profit = stockIndex.index_made("US500")
     coin_rate,coin_profit = stockIndex.coin_index()
@@ -30,6 +37,65 @@ def home():
 @app.route("/")
 def main():
     return render_template("main.html")
+@app.route("/new",methods=["GET","POST"])
+def new():
+    if request.method == "POST":
+        ID = request.form.get("id",type=str)
+        pwd = request.form.get("pwd",type=str)
+        pwd2 = request.form.get("pwd2",type=str)
+        if id=="" or pwd=="" or pwd2=="":
+            flash("입력되지 않은 값이 있습니다.")
+            return render_template("new.html") 
+        if pwd!=pwd2:
+            flash("비밀번호가 일치하지 않습니다.")
+            return render_template("new.html") 
+        members = mongo.db.members
+        data = members.find_one({"id":ID})
+        if data is not None:
+            flash("아이디가 중복됩니다.")
+            return render_template("new.html") 
+
+        post={
+            "id":ID,
+            "password": generate_password_hash(pwd),
+            "logintime":"",
+            "logincount":0,
+        }
+
+        members.insert_one(post)
+        flash("회원가입이 완료되었습니다.")
+        return render_template("login.html")
+    else:
+        return render_template("new.html")
+
+@app.route("/login",methods=['GET','POST'])
+def login():
+    if request.method == "POST":
+        ID = request.form.get("id",type=str)
+        pwd = request.form.get("pwd",type=str)
+        members = mongo.db.members
+        data = members.find_one({"id":ID})
+        if data is None:
+            flash("회원정보가 없습니다.")
+            return render_template("login.html")
+        else:
+            if check_password_hash(data.get("password"),pwd):
+                session["ID"] = str(data.get("id"))
+                session.permenent = True
+                flash("로그인 성공!")
+                return render_template("index.html")
+            else:
+                flash("비밀번호가 일치하지 않습니다.")
+                return redirect(url_for("login"))
+    elif request.method == "GET":
+        return render_template("login.html")
+    else:
+        return redirect(url_for("main"))
+@app.route('/logout')
+def logout():
+    session.pop('ID', None)
+    flash("로그아웃 성공!")
+    return redirect('/main')
 #포트폴리오 이용 설명
 @app.route("/port_explain")
 def port_explain():
@@ -63,7 +129,12 @@ def coinreturn():
 #포트폴리오 
 @app.route("/portfolio")
 def portfolio():
-    return render_template("portfolio.html")
+    try:
+        if(session['ID']):
+            return render_template("portfolio.html")
+    except:
+        flash("로그인을 먼저 해주세요.")
+        return render_template("login.html")
 #코스피 코스닥 오늘의 종목 검색
 @app.route("/inquiry/search")
 def inquirySearch():
@@ -71,18 +142,21 @@ def inquirySearch():
 #코스피 코스닥 오늘의 시세 출력
 @app.route("/inquiry/todayrate")
 def inquiryTodayrate():
-    try:
-        company = request.args.get('company')
-        date = request.args.get('date')
-        df_krx = c.KRX_connect()
-        stock_rate = c.KRX_rate(df_krx,company)
-        df = US.df_made(df_krx,company,date)
-        #chart img
-        US.basic_chart(df,company)
-        #chart html
-        US.real_chart(df,company)
-    except:
-        return redirect("/")
+    #try:
+    company = request.args.get('company')
+    date = request.args.get('date')
+    df_krx = c.KRX_connect()
+    stock_rate,symbol = c.KRX_rate(df_krx,company)
+    #db.KRW_made(symbol, stock_rate)
+    #items = db.KRW_inquiry()
+    print(items)
+    #df = US.df_made(df_krx,company,date,db)
+    #chart img
+    US.basic_chart(df,company)
+    #chart html
+    US.real_chart(df,company)
+    #except:
+        #return redirect("/")
     return render_template("inquiryTodayrate.html",searchingBy=company,stockRate=stock_rate)
 
 #나스닥 오늘의 종목 검색
@@ -199,11 +273,21 @@ def stock_return():
 #종목 매수 정보 입력
 @app.route("/portfolio/buy")
 def portfolioBuy():
-    return render_template("portfolioBuy.html")
+    try:
+        if(session['ID']):
+            return render_template("portfolioBuy.html")
+    except:
+        flash("로그인을 먼저 해주세요.")
+        return render_template("login.html")
 
 #매수 완료 처리
 @app.route("/portfolio/buy_return")
 def portfolioBuy_return():
+    if(session['ID']):
+        pass
+    else:
+        flash("로그인을 먼저 해주세요.")
+        return render_template("login.html")
     get_buycollect = p.buy_open()
     name = request.args.get('name')
     moneyvalue = request.args.get('moneyValue')
@@ -241,6 +325,11 @@ def portfolioBuy_return():
 @app.route("/portfolio/buyreturn")
 def BuyReturn():
     try:
+        if(session['ID']):
+            pass
+        else:
+            flash("로그인을 먼저 해주세요.")
+            return render_template("login.html")
         path="/nomadcoders/boot/DB/check.txt"
         file = open(path, 'r')
         Check=int(file.read())
@@ -258,12 +347,23 @@ def BuyReturn():
 #종목 매도 정보 입력
 @app.route("/portfolio/sell")
 def portfolioSell():
-    return render_template("portfolioSell.html")
+    try:
+        if(session['ID']):
+            return render_template("portfolioSell.html")
+    except:
+        flash("로그인을 먼저 해주세요.")
+        return render_template("login.html")
 
 #종목 매도 처리
 @app.route("/portfolio/sell_return")
 def portfolioSell_return():
     try:
+        try:
+            if(session['ID']):
+                pass
+        except:
+            flash("로그인을 먼저 해주세요.")
+            return render_template("login.html")
         buycollect = p.buy_open()
         sellname = request.args.get('name2')
         sellprice = request.args.get('price2')
@@ -312,6 +412,12 @@ def portfolioSell_return():
 @app.route("/portfolio/sellreturn")
 def portfolioSellReturn():
     try:
+        try:
+            if(session['ID']):
+                pass
+        except:
+            flash("로그인을 먼저 해주세요.")
+            return render_template("login.html")
         path="/nomadcoders/boot/DB/check.txt"
         file = open(path, 'r')
         Check=int(file.read())
@@ -331,128 +437,154 @@ def portfolioSellReturn():
 @app.route("/portfolio/inquiry")
 def portfolioInquiry():
     #초기 리스트 생성
-    global p
-    Buyitem= []
-    get_code = []
-    get_profit = []
-    get_presentrate = []
-    get_presentprofit = []
-    Buyremain=[]
-    sell_already=[]
-    ptotal=[]
-    ltotal=[]
-    last_total=0
-    present_total=0
-    longline = "\n"
-    #매수 정보 불러옴
-    Buyinfor = p.buy_open()
-    Sellinfor = p.sell_open()
-    Size = len(Buyinfor) / 3
-    for i in range(0,int(Size)):
-        #매수 종목을 리스트에 저장
-        Buyitem.append(Buyinfor[3*i])
-    for i in range(0,len(Buyitem)):
-        for j in range(0,len(Buyinfor)):
-            #종목 이름이 들어있는 항목의 위치를 찾음
-            if(Buyitem[i] == Buyinfor[j]):
-                #매도한 내용이 있는지 확인
-                if(len(Sellinfor) != 0):
-                    for s in range(0,len(Sellinfor)):
-                        if(Buyinfor[j] == Sellinfor[s]):
-                            if(Sellinfor[s] not in sell_already):
-                                #해당 종목의 매도량을 저장함
-                                stocknumber = p.stock_item_open(Buyitem[i])
-                                #현재 남은 수량을 저장함
-                                Buyremain = int(Buyinfor[j+2]) - stocknumber
-                                #리스트에 최신화(리스트를 이용하여 출력할 것이기 때문이다.)
-                                Buyinfor[j+2] = Buyremain
-                                sell_already.append(Sellinfor[s])
-                                #코드만 불러옴
+    try:
+        try:
+            if(session['ID']):
+                pass
+        except:
+            flash("로그인을 먼저 해주세요.")
+            return render_template("login.html")
+        global p
+        Buyitem= []
+        get_code = []
+        get_profit = []
+        get_presentrate = []
+        get_presentprofit = []
+        Buyremain=[]
+        sell_already=[]
+        ptotal=[]
+        ltotal=[]
+        last_total=0
+        present_total=0
+        longline = "\n"
+        #매수 정보 불러옴
+        Buyinfor = p.buy_open()
+        Sellinfor = p.sell_open()
+        Size = len(Buyinfor) / 3
+        for i in range(0,int(Size)):
+            #매수 종목을 리스트에 저장
+            Buyitem.append(Buyinfor[3*i])
+        for i in range(0,len(Buyitem)):
+            for j in range(0,len(Buyinfor)):
+                #종목 이름이 들어있는 항목의 위치를 찾음
+                if(Buyitem[i] == Buyinfor[j]):
+                    #매도한 내용이 있는지 확인
+                    if(len(Sellinfor) != 0):
+                        for s in range(0,len(Sellinfor)):
+                            if(Buyinfor[j] == Sellinfor[s]):
+                                if(Sellinfor[s] not in sell_already):
+                                    #해당 종목의 매도량을 저장함
+                                    stocknumber = p.stock_item_open(Buyitem[i])
+                                    #현재 남은 수량을 저장함
+                                    Buyremain = int(Buyinfor[j+2]) - stocknumber
+                                    #리스트에 최신화(리스트를 이용하여 출력할 것이기 때문이다.)
+                                    Buyinfor[j+2] = Buyremain
+                                    sell_already.append(Sellinfor[s])
+                                    #코드만 불러옴
+                                else:
+                                    pass
                             else:
-                                pass
-                        else:
-                            Buyremain = Buyinfor[j+2]
+                                Buyremain = Buyinfor[j+2]
+                    else:
+                        #매도 내용이 없으면 현재 수량을 남은 수량으로 저장
+                        Buyremain = Buyinfor[j+2]
+                    #최종적으로 종목을 출력 형식에 맞게 값을 변형시킴
+                    df_krx = c.KRX_connect()
+                    get_code = df_krx[df_krx.Name==Buyitem[i]].Symbol.values[0].strip()  
+                    get_profit, get_presentrate, get_presentprofit,get_ptotal,get_ltotal = p.present_rate(get_code,Buyitem[i],Buyinfor[j+1],Buyremain) 
+                    ptotal.append(get_ptotal)
+                    ltotal.append(get_ltotal)
+                    Buyinfor.insert(j+2,get_presentrate)
+                    Buyinfor.insert(j+3,get_profit)
+                    Buyinfor.insert(j+5,get_presentprofit)
+                    Buyinfor.insert(j+6,longline)
                 else:
-                    #매도 내용이 없으면 현재 수량을 남은 수량으로 저장
-                    Buyremain = Buyinfor[j+2]
-                #최종적으로 종목을 출력 형식에 맞게 값을 변형시킴
-                df_krx = c.KRX_connect()
-                get_code = df_krx[df_krx.Name==Buyitem[i]].Symbol.values[0].strip()  
-                get_profit, get_presentrate, get_presentprofit,get_ptotal,get_ltotal = p.present_rate(get_code,Buyitem[i],Buyinfor[j+1],Buyremain) 
-                ptotal.append(get_ptotal)
-                ltotal.append(get_ltotal)
-                Buyinfor.insert(j+2,get_presentrate)
-                Buyinfor.insert(j+3,get_profit)
-                Buyinfor.insert(j+5,get_presentprofit)
-                Buyinfor.insert(j+6,longline)
+                    pass
+        for l in range(0, len(Buyinfor)):
+            if(Buyinfor[l] == 0):
+                #만약 남은 수량이 0이라면 해당 정보가 출력되지 않게 삭제함
+                del Buyinfor[l-4:l+3]
+                break
             else:
                 pass
-    for l in range(0, len(Buyinfor)):
-        if(Buyinfor[l] == 0):
-            #만약 남은 수량이 0이라면 해당 정보가 출력되지 않게 삭제함
-            del Buyinfor[l-4:l+3]
-            break
-        else:
-            pass
 
-    #입력된 내용을 형식적으로 다듬는 과정
-    for k in range(0,len(Buyinfor)):
-        if(k%7 == 1 ):
-            average_rate = Buyinfor[k]
-            get_average = format(int(average_rate),',')
-            average = "평단가 : "+ get_average+"원"
-            Buyinfor[k] = average
-        elif(k%7 == 4):
-            amount = Buyinfor[k]
-            get_amount = format(int(amount),',')
-            stock_amount = "수량 : " + get_amount+"주"
-            Buyinfor[k] = stock_amount
+        #입력된 내용을 형식적으로 다듬는 과정
+        for k in range(0,len(Buyinfor)):
+            if(k%7 == 1 ):
+                average_rate = Buyinfor[k]
+                get_average = format(int(average_rate),',')
+                average = "평단가 : "+ get_average+"원"
+                Buyinfor[k] = average
+            elif(k%7 == 4):
+                amount = Buyinfor[k]
+                get_amount = format(int(amount),',')
+                stock_amount = "수량 : " + get_amount+"주"
+                Buyinfor[k] = stock_amount
+            else:
+                pass
+        #총합 값 계산
+        for n in range(0,len(ltotal)):
+            last_total += ltotal[n] 
+            present_total += ptotal[n] 
+        #형식에 맞게 값 저장
+        get_latotal = format(last_total,',')
+        get_prtotal = format(present_total,',')
+        if(present_total-last_total== 0):
+            Buyinfor.append("구매 총합 : "+get_latotal+"원")
+            Buyinfor.append("현재 총합 : "+get_prtotal+"원")
         else:
-            pass
-    #총합 값 계산
-    for n in range(0,len(ltotal)):
-        last_total += ltotal[n] 
-        present_total += ptotal[n] 
-    #형식에 맞게 값 저장
-    get_latotal = format(last_total,',')
-    get_prtotal = format(present_total,',')
-    if(present_total-last_total== 0):
-        Buyinfor.append("구매 총합 : "+get_latotal+"원")
-        Buyinfor.append("현재 총합 : "+get_prtotal+"원")
-    else:
-        total_profit = (present_total-last_total)/last_total*100
-        Buyinfor.append("구매 총합 : "+get_latotal+"원")
-        Buyinfor.append("현재 총합 : "+get_prtotal+"원")
-        Buyinfor.append("총 수익률 : "+"{:0,.2f}".format(total_profit)+"%")
-    portfolio_len =len(Buyinfor)
-    return render_template("portfolioInquiry.html",portfolio=Buyinfor,portfolio_len=portfolio_len)
+            total_profit = (present_total-last_total)/last_total*100
+            Buyinfor.append("구매 총합 : "+get_latotal+"원")
+            Buyinfor.append("현재 총합 : "+get_prtotal+"원")
+            Buyinfor.append("총 수익률 : "+"{:0,.2f}".format(total_profit)+"%")
+        portfolio_len =len(Buyinfor)
+        return render_template("portfolioInquiry.html",portfolio=Buyinfor,portfolio_len=portfolio_len)
+    except:
+        return render_template("portfolio.html")
 
 #매도 수익 출력
 @app.route("/portfolio/return")
 def portfolioReturn():
-    PLcollect = p.pl_open()
-    if PLcollect:
-        length = len(PLcollect)
-    else:
-        return redirect("/")
-    return render_template("/portfolioReturn.html",PLcollect=PLcollect,len=length)
+    try:
+        if(session['ID']):
+            pass
+        PLcollect = p.pl_open()
+        if PLcollect:
+            length = len(PLcollect)
+        else:
+            return redirect("/")
+        return render_template("/portfolioReturn.html",PLcollect=PLcollect,len=length)
+    except:
+            flash("로그인을 먼저 해주세요.")
+            return render_template("login.html")
 
 
 #포트폴리오 초기화 여부 확인
 @app.route("/portfolio/init")
 def portfolioInit():
-    return render_template("/portfolioInit.html")
+    try:
+        if(session['ID']):
+            return render_template("/portfolioInit.html")
+    except:
+        flash("로그인을 먼저 해주세요.")
+        return render_template("login.html")
 
 #포트폴리오 초기화
 @app.route("/portfolio/init_return")
 def portfolioInit_return():
-    initialize = request.args.get('initialize')
-    if(initialize=="초기화"):
-        stock_item = p.buy_open()
-        p.portfolio_initialize(stock_item)
-    else:
-        pass
-    return render_template("/portfolioInit_return.html",initialize=initialize)
+    try:
+        if(session['ID']):
+            pass
+        initialize = request.args.get('initialize')
+        if(initialize=="초기화"):
+            stock_item = p.buy_open()
+            p.portfolio_initialize(stock_item)
+        else:
+            pass
+        return render_template("/portfolioInit_return.html",initialize=initialize)
+    except:
+            flash("로그인을 먼저 해주세요.")
+            return render_template("login.html")
 
 
 app.run(host="0.0.0.0", debug=True)

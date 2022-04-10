@@ -25,7 +25,7 @@ def KRX_rate(df_KRX,Name):
     gap = KRXrate['Close'].values[1]-KRXrate['Close'].values[0]
     KRX.append("{0:,}".format(gap) +"원")
     KRX.append(str("{:.2f}".format(KRXrate['Change'].values[1]*100))+'%')
-    return KRX
+    return KRX,symbol
 
 #한국 데이터 연결하는 함수
 def KRX_connect():

@@ -26,6 +26,7 @@
         float: bottom;
       }
     </style>
+    <script src="../static/js/focus.js"></script>
     <script
       src="https://code.jquery.com/jquery-3.6.0.js"
       integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
@@ -128,48 +129,37 @@
       <div class="container px-lg-5">
         <div class="p-4 p-lg-5 bg-light rounded-3 text-center">
           <div class="m-4 m-lg-5">
-            <h1 class="display-5 fw-bold">수익률 검색</h1>
+            <h1 class="display-5 fw-bold">로그인</h1>
           </div>
         </div>
-        <form action="/inquiry/stock_return" method="get">
+        <form name="form" action="/login" method="post">
           <!-- Page Features-->
           <div class="row gx-lg-5">
-            <div class="card border-0 h-100 position-all">
+            <div class="card bg-light border-0 h-100">
               <!--text정렬-->
               <div class="card-body text-center p-4 p-lg-5 pt-0 pt-lg-0">
-                <label for="stockName" class="display-7 fw-bold"
-                  >종목 이름&nbsp</label
-                >
+                <label>아이디</label>
                 <input
-                  placeholder="EX)삼성전자"
+                  class="btn btn-lg btn-info mb-3 me-md-3"
+                  id="id"
+                  placeholder="아이디"
                   required
-                  id="stock-input"
-                  name="stocks"
-                  class="btn btn-lg btn-info mb-3 me-md-3"
+                  name="id"
                 />
                 <br />
-                <label for="purdate" class="display-7 fw-bold"
-                  >매수 날짜&nbsp</label
-                >
+                <label>비밀번호</label>
                 <input
-                  type="date"
-                  name="purchase_date"
                   class="btn btn-lg btn-info mb-3 me-md-3"
+                  id="pwd"
+                  type="password"
+                  placeholder="패스워드"
+                  required
+                  name="pwd"
                 />
-                <br />
-                <label for="saledate" class="display-7 fw-bold"
-                  >매도 날짜&nbsp</label
-                >
-                <input
-                  type="date"
-                  name="sale_date"
-                  class="btn btn-lg btn-info mb-3 me-md-3"
-                />
-                <br />
                 <input
                   type="submit"
-                  value="검색"
-                  class="search bg-secondery bg-gradient text-dark rounded-3 mb-4 mt-n4 position-search"
+                  value="확인"
+                  class="search bg-secondery bg-gradient text-dark rounded-3 mb-4 mt-n4"
                 />
               </div>
             </div>
@@ -207,12 +197,12 @@
                 >
                   <i class="bi bi-bar-chart-steps"></i>
                 </div>
-                <h2 class="fs-4 fw-bold">나스닥 조회</h2>
+                <h2 class="fs-4 fw-bold">수익률 조회</h2>
                 <br />
                 <a
                   id="returnIcon"
                   class="btn btn-primary btn-lg"
-                  href="/inquiry/nasdaq"
+                  href="/inquiry/return"
                   >inquiry</a
                 >
               </div>
@@ -240,7 +230,7 @@
         </div>
       </div>
       <hr />
-      <div class="col-lg-6 col-xxl-2 mb-5 m-xxl-auto">
+      <div class="col-lg-12 col-xxl-2 mb-5 m-xxl-auto">
         <div class="card bg-light border-0 h-100">
           <br />
           <a
@@ -272,8 +262,7 @@
     <!-- Core theme JS-->
     <script src="../static/js/scripts.js"></script>
     <script src="../static/js/menu.js"></script>
-    <script src="../static/js/autocomplete.js"></script>
     <script src="../static/js/data.js"></script>
-    <script src="../static/js/focus.js"></script>
+    <script src="../static/js/autocomplete.js"></script>
   </body>
 </html>
