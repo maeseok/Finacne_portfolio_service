@@ -24,11 +24,11 @@ app.config["MONGO_URI"] = "mongodb+srv://maeseok:didc001@finance.smjhg.mongodb.n
 app.config["SECRET_KEY"] = "bvWjJlEvRqsOBPnu"
 app.config["PERMANET_SESSION_LIFETIME"] = timedelta(minutes = 30)
 mongo = PyMongo(app)
-
 #대표 화면
 @app.route("/main")
 def home():  
     #이건 DB도 옮기자! CRON까지 이용하면 좋을듯
+    #결국 이 함수때문에 늦음 -> 한계인가?
     kospi_rate,kospi_profit= stockIndex.index_made("KS11")
     sp500_rate,sp500_profit = stockIndex.index_made("US500")
     coin_rate,coin_profit = stockIndex.coin_index()
@@ -75,6 +75,7 @@ def login():
         ID = request.form.get("id",type=str)
         pwd = request.form.get("pwd",type=str)
         members = mongo.db.members
+        #members.create_index("id")
         data = members.find_one({"id":ID})
         if data is None:
             flash("회원정보가 없습니다.")

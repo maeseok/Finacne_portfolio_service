@@ -3,3 +3,7 @@ window.onload = function () {
   const stockInput = document.querySelector("#stock-input");
   stockInput.focus();
 };
+window.onload = function () {
+  const stockInput = document.querySelector("#id");
+  stockInput.focus();
+};

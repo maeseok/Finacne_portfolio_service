@@ -6,7 +6,10 @@
       name="viewport"
       content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
-    <meta name="description" content="주식 포트폴리오와 시세 조회" />
+    <meta
+      name="description"
+      content="finance FINANCE inquiry INQUIRY maeseok PORTFOLIO portfolio"
+    />
     <meta name="author" content="" />
     <title>FINANCE PORTFOLIO</title>
     <!-- Favicon-->
@@ -23,11 +26,17 @@
         float: bottom;
       }
     </style>
+    <script src="../static/js/focus.js"></script>
     <script
       src="https://code.jquery.com/jquery-3.6.0.js"
       integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
       crossorigin="anonymous"
     ></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <link
+      rel="stylesheet"
+      href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"
+    />
   </head>
   <body>
     <!-- Responsive navbar-->
@@ -123,78 +132,47 @@
     </nav>
     <!-- Header-->
     <header class="py-5">
-      <br />
-      <br />
-      <br />
       <div class="container px-lg-5">
-        <div class="row gx-lg-5">
-          <div class="col-lg-6 col-xxl-4 mb-5">
+        <div class="p-4 p-lg-5 bg-light rounded-3 text-center">
+          <div class="m-4 m-lg-5">
+            <h1 class="display-5 fw-bold">로그인</h1>
+          </div>
+        </div>
+        <form name="form" action="/login" method="post">
+          <!-- Page Features-->
+          <div class="row gx-lg-5">
             <div class="card bg-light border-0 h-100">
+              <!--text정렬-->
               <div class="card-body text-center p-4 p-lg-5 pt-0 pt-lg-0">
-                <img
-                  src="../static/assets/img/KOREA.png"
-                  width="100"
-                  title="대한민국 아이콘  제작자: Dighital - Flaticon"
+                <label>아이디</label>
+                <input
+                  class="btn btn-lg btn-info mb-3 me-md-3"
+                  id="id"
+                  placeholder="아이디"
+                  required
+                  name="id"
                 />
                 <br />
-                <br />
-                <h2 class="fs-4 fw-bold">KOSPI</h2>
-                <div id="krw">
-                  <p class="mb-0">{{kospiRate}} KRW</p>
-                  <p class="mb-0">{{kospiProfit}}</p>
-                </div>
-                <br />
+                <label>비밀번호</label>
+                <input
+                  class="btn btn-lg btn-info mb-3 me-md-3"
+                  id="pwd"
+                  type="password"
+                  placeholder="패스워드"
+                  required
+                  name="pwd"
+                />
+                <input
+                  type="submit"
+                  value="확인"
+                  class="search bg-secondery bg-gradient text-dark rounded-3 mb-4 mt-n4"
+                />
               </div>
             </div>
           </div>
-          <div class="col-lg-6 col-xxl-4 mb-5">
-            <div class="card bg-light border-0 h-100">
-              <div class="card-body text-center p-4 p-lg-5 pt-0 pt-lg-0">
-                <img src="../static/assets/img/US.png" width="100" / title =
-                "미국 아이콘 제작자: Freepik - Flaticon">
-                <br />
-                <br />
-                <h2 class="fs-4 fw-bold">S&P500</h2>
-                <div id ="usd">
-                  <p class="mb-0">{{sp500Rate}} USD</p>
-                  <p class="mb-0">{{sp500Profit}}</p>
-                </div>
-                <br />
-                <br />
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-6 col-xxl-4 mb-5">
-            <div class="card bg-light border-0 h-100">
-              <div class="card-body text-center p-4 p-lg-5 pt-0 pt-lg-0">
-                <img src="../static/assets/img/COIN.png" width="100" / title =
-                "비트 코인 아이콘 제작자: adriansyah - Flaticon">
-                <br />
-                <br />
-                <h2 class="fs-4 fw-bold">비트코인</h2>
-                <div id="coin">
-                  <p class="mb-0">{{coinRate}} KRW</p>
-                  <p class="mb-0">{{coinProfit}}</p>
-                </div>
-                <br />
-                <br />
-              </div>
-            </div>
-          </div>
-        </div>
+        </form>
       </div>
-      <div class="p-4 p-lg-5 bg-light rounded-3 text-center">
-        <div class="m-4 m-lg-5">
-          <br />
-          <h1 class="display-5 fw-bold">방문을 환영합니다!</h1>
-          <p class="fs-4">
-            우리 사이트에서는 주식 포트폴리오 서비스와 <br />시세 조회 서비스를
-            제공하고 있습니다.<br />
-            회원가입을 통하여 모든 서비스를 무료로 이용하세요.
-          </p>
-          <a class="btn btn-primary btn-lg" href="/new">회원가입</a>
-        </div>
-      </div>
+      <hr />
     </header>
     <!-- Page Content-->
     <section class="pt-4">
@@ -207,21 +185,31 @@
                 <div
                   class="feature bg-primary bg-gradient text-white rounded-3 mb-4 mt-n4"
                 >
-                  <i class="bi bi-cloud-download"></i>
+                  <i class="bi bi-arrow-left-square"></i>
                 </div>
-                <h2 class="fs-4 fw-bold">코드 다운로드</h2>
-                <p class="mb-0">
-                  포트폴리오와 시세 조회에 사용된 <br />
-                  코드를 무료로 다운로드 할 수 있습니다.
-                </p>
+                <h2 class="fs-4 fw-bold">뒤로 가기</h2>
                 <br />
+                <a id="backIcon" class="btn btn-primary btn-lg" href="/inquiry"
+                  >back</a
+                >
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-6 col-xxl-4 mb-5">
+            <div class="card bg-light border-0 h-100">
+              <div class="card-body text-center p-4 p-lg-5 pt-0 pt-lg-0">
+                <div
+                  class="feature bg-primary bg-gradient text-white rounded-3 mb-4 mt-n4"
+                >
+                  <i class="bi bi-bar-chart-steps"></i>
+                </div>
+                <h2 class="fs-4 fw-bold">수익률 조회</h2>
                 <br />
                 <a
-                  id="gitDownloadIcon"
+                  id="returnIcon"
                   class="btn btn-primary btn-lg"
-                  href="https://github.com/maeseok/FIANCE_PORTFOLIO_API-PAGE"
-                  target="_blank"
-                  >Download</a
+                  href="/inquiry/return"
+                  >inquiry</a
                 >
               </div>
             </div>
@@ -235,43 +223,30 @@
                   <i class="bi bi-book-fill"></i>
                 </div>
                 <h2 class="fs-4 fw-bold">포트폴리오</h2>
-                <p class="mb-0">
-                  주식 포트폴리오 서비스를 <br />이용하실 수 있습니다.
-                </p>
-                <br />
                 <br />
                 <a
-                  id="portfolioExplainIcon"
+                  id="portfolioIcon"
                   class="btn btn-primary btn-lg"
-                  href="/port_explain"
-                  >바로가기</a
+                  href="/portfolio"
+                  >portfolio</a
                 >
               </div>
             </div>
           </div>
-          <div class="col-lg-6 col-xxl-4 mb-5">
-            <div class="card bg-light border-0 h-100">
-              <div class="card-body text-center p-4 p-lg-5 pt-0 pt-lg-0">
-                <div
-                  class="feature bg-primary bg-gradient text-white rounded-3 mb-4 mt-n4"
-                >
-                  <i class="bi bi-arrow-clockwise"></i>
-                </div>
-                <h2 class="fs-4 fw-bold">시세 조회</h2>
-                <p class="mb-0">
-                  시세 조회 서비스를 <br />이용하실 수 있습니다.
-                </p>
-                <br />
-                <br />
-                <a
-                  id="inquiryExplainIcon"
-                  class="btn btn-primary btn-lg"
-                  href="/inquiry"
-                  >바로가기</a
-                >
-              </div>
-            </div>
-          </div>
+        </div>
+      </div>
+      <hr />
+      <div class="col-lg-12 col-xxl-2 mb-5 m-xxl-auto">
+        <div class="card bg-light border-0 h-100">
+          <br />
+          <a
+            id="homeicon"
+            class="btn btn-primary btn-lg bi bi-house-fill"
+            href="/main"
+          >
+            홈으로</a
+          >
+          <br />
         </div>
       </div>
     </section>
@@ -293,5 +268,7 @@
     <!-- Core theme JS-->
     <script src="../static/js/scripts.js"></script>
     <script src="../static/js/menu.js"></script>
+    <script src="../static/js/data.js"></script>
+    <script src="../static/js/autocomplete.js"></script>
   </body>
 </html>
