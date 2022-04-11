@@ -29,7 +29,7 @@ def NASDAQ_rate(df_nasdaq,Name):
     gap = "{:.2f}".format(nasdaqrate['Close'].values[1]-nasdaqrate['Close'].values[0])
     NASDAQ.append('$ '+gap)
     NASDAQ.append(str("{:.2f}".format(nasdaqrate['Change'].values[1]*100))+'%')
-    return NASDAQ
+    return NASDAQ,symbol
 #나스닥 데이터 연결하는 함수
 def NASDAQ_connect():
     codepath = "./DBandDB_SOURCE/nasdaq.txt"
@@ -53,7 +53,7 @@ def NYSE_rate(df_nyse,Name):
     gap = "{:.2f}".format(nyserate['Close'].values[1]-nyserate['Close'].values[0])
     NYSE.append('$ '+gap)
     NYSE.append(str("{:.2f}".format(nyserate['Change'].values[1]*100))+'%')
-    return NYSE
+    return NYSE,symbol
 #뉴욕 증권거래소 연결하는 함수
 def NYSE_connect():
     codepath = "./DBandDB_SOURCE/nyse.txt"
@@ -77,7 +77,7 @@ def AMEX_rate(df_amex,Name):
     gap = "{:.2f}".format(amexrate['Close'].values[1]-amexrate['Close'].values[0])
     AMEX.append('$ '+gap)
     AMEX.append(str("{:.2f}".format(amexrate['Change'].values[1]*100))+'%')
-    return AMEX
+    return AMEX,symbol
 #아맥스 연결하는 함수
 def AMEX_connect():
     codepath = "./DBandDB_SOURCE/amex.txt"
@@ -100,7 +100,7 @@ def ETFUS_rate(df_etfus,Name,company):
     gap = "{:.2f}".format(etfusrate['Close'].values[1]-etfusrate['Close'].values[0])
     ETFUS.append('$ '+gap)
     ETFUS.append(str("{:.2f}".format(etfusrate['Change'].values[1]*100))+'%')
-    return ETFUS
+    return ETFUS,symbol
 
 #ETF/US 연결하는 함수
 def ETFUS_connect():
@@ -111,9 +111,7 @@ def ETFUS_connect():
     return df_etfus
 
 #정리된 df 만들기!
-def df_made(Code,Name,Date):
-    symbol = Code[Code.Name==Name].Symbol.values[0].strip()
-    #이 값을 바꾸면 언제부터 시작할지도!(차트)
+def df_made(symbol,Date):
     df = fdr.DataReader(symbol,Date)
     #중요! Date를 index에서 제외시킨다!!!! -> df 자체를 정렬된 상태로 저장
     df.reset_index(inplace=True)

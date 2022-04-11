@@ -440,19 +440,22 @@ def coin_connect(moneyvalue,coinname,date):
             pass
     #df에 해당 코인의 데이터를 저장
     df = pyupbit.get_ohlcv(coinitem,interval="day",to = nowDATE,count = date)
-    return df
+    df = df[['open','close']]
+    print(df)
+    rate = pyupbit.get_current_price([coinitem])
+    return df, rate
 
 #코인 가격 리스트에 저장
-def coin_rate(moneyvalue,coinitem,df):
+def coin_rate(moneyvalue,coinitem,df,rate):
     nowDATE = time_format()
     #오픈 가격만 뒤에서 2줄만 가져옴
-    df_open = df[['open']]
-    df_open = df_open[-2:]
+    #df_open = df[['open']]
+    #df_open = df_open[-2:]
     df_close = df[['close']]
     df_close = df_close[-1:]
     #해당 값을 두 개의 변수에 저장
-    firstrate = df_open['open'].values[0]
-    lastrate = df_close['close'].values[0]
+    firstrate = df_close['close'].values[0]
+    lastrate = rate
     coinrate =[]
     #날짜와 코인 이름, 현재 가격을 추가
     coinrate.append(nowDATE)
@@ -464,8 +467,14 @@ def coin_rate(moneyvalue,coinitem,df):
     else:
         gap = "{0:,.2f}".format(lastrate-firstrate)
     if(moneyvalue == "KRW"):
-         #변동 계산 및 추가
-        coinrate.append("{0:,.0f}".format(lastrate)+"원")
+        #변동 계산 및 추가
+        #if(int(firstrate) > 100):
+        #    coinrate.append("{0:,.0f}".format(lastrate)+"원")
+        #elif(int(firstrate)<1):
+        #    coinrate.append("{0:,.3f}".format(lastrate)+"원")
+        #else:
+        #    coinrate.append("{0:,.2f}".format(lastrate)+"원")
+        coinrate.append(str(lastrate)+"원")
         coinrate.append(gap+"원")
     elif(moneyvalue == "USD"):
          #변동 계산 및 추가

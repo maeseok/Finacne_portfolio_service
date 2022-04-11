@@ -10,13 +10,19 @@ import plotly.express as px
 import datetime
 import FinanceDataReader as fdr
 import US
-
+import pymongo
 #한국 가격 형식화 함수
-def KRX_rate(df_KRX,Name):
+def KRX_rate(df_KRX,Name,date):
     nowDATE = US.time_format()
+    #client = pymongo.MongoClient("mongodb+srv://maeseok:didc001@finance.smjhg.mongodb.net/data?retryWrites=true&w=majority")
+    #KRX = client['KRX']
+    #KRX.data.create_index('Name')
+    #find 속도만 빨라지면 될듯.. + 차트가 느림
+    #data = KRX.data.find_one({"Name":Name})
+    #symbol = data.get("Symbol")
     symbol = df_KRX[df_KRX.Name==Name].Symbol.values[0].strip()
-    rate = fdr.DataReader(symbol,nowDATE[:7])
-    rate = rate[['Close','Change']]
+    df_rate = fdr.DataReader(symbol,date)
+    rate = df_rate[['Close','Change']]
     KRXrate = rate[-2:]
     KRX = []
     KRX.append(nowDATE)
@@ -25,7 +31,7 @@ def KRX_rate(df_KRX,Name):
     gap = KRXrate['Close'].values[1]-KRXrate['Close'].values[0]
     KRX.append("{0:,}".format(gap) +"원")
     KRX.append(str("{:.2f}".format(KRXrate['Change'].values[1]*100))+'%')
-    return KRX,symbol
+    return KRX,symbol,df_rate
 
 #한국 데이터 연결하는 함수
 def KRX_connect():

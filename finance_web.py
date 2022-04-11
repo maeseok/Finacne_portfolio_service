@@ -22,12 +22,13 @@ nowDATE = time_format()
 app = Flask(__name__)
 app.config["MONGO_URI"] = "mongodb+srv://maeseok:didc001@finance.smjhg.mongodb.net/members?retryWrites=true&w=majority"
 app.config["SECRET_KEY"] = "bvWjJlEvRqsOBPnu"
-app.config["PERMANET_SESSION_LIFETIME"] = timedelta(minutes = 1)
+app.config["PERMANET_SESSION_LIFETIME"] = timedelta(minutes = 30)
 mongo = PyMongo(app)
 
 #대표 화면
 @app.route("/main")
 def home():  
+    #이건 DB도 옮기자! CRON까지 이용하면 좋을듯
     kospi_rate,kospi_profit= stockIndex.index_made("KS11")
     sp500_rate,sp500_profit = stockIndex.index_made("US500")
     coin_rate,coin_profit = stockIndex.coin_index()
@@ -77,13 +78,13 @@ def login():
         data = members.find_one({"id":ID})
         if data is None:
             flash("회원정보가 없습니다.")
-            return render_template("login.html")
+            return redirect(url_for("login"))
         else:
             if check_password_hash(data.get("password"),pwd):
                 session["ID"] = str(data.get("id"))
                 session.permenent = True
                 flash("로그인 성공!")
-                return render_template("index.html")
+                return redirect(url_for("home"))
             else:
                 flash("비밀번호가 일치하지 않습니다.")
                 return redirect(url_for("login"))
@@ -115,8 +116,8 @@ def coinreturn():
         moneyvalue = request.args.get('moneyValue')
         coinname = request.args.get('coinname')
         if(moneyvalue== "KRW"):
-            df_coin= COIN.coin_connect(moneyvalue,coinname,500)
-            coinrate = COIN.coin_rate(moneyvalue,coinname,df_coin)
+            df_coin,rate= COIN.coin_connect(moneyvalue,coinname,500)
+            coinrate = COIN.coin_rate(moneyvalue,coinname,df_coin,rate)
         elif(moneyvalue == "USD"):
             ticker = COIN.usd_connect(coinname)
             df_coin = COIN.get_df_binance(ticker, "1d")
@@ -142,21 +143,18 @@ def inquirySearch():
 #코스피 코스닥 오늘의 시세 출력
 @app.route("/inquiry/todayrate")
 def inquiryTodayrate():
-    #try:
-    company = request.args.get('company')
-    date = request.args.get('date')
-    df_krx = c.KRX_connect()
-    stock_rate,symbol = c.KRX_rate(df_krx,company)
-    #db.KRW_made(symbol, stock_rate)
-    #items = db.KRW_inquiry()
-    print(items)
-    #df = US.df_made(df_krx,company,date,db)
-    #chart img
-    US.basic_chart(df,company)
-    #chart html
-    US.real_chart(df,company)
-    #except:
-        #return redirect("/")
+    try:
+        company = request.args.get('company')
+        date = request.args.get('date')
+        df_krx = c.KRX_connect()
+        stock_rate,symbol,df= c.KRX_rate(df_krx,company,date)
+        df.reset_index(inplace=True)
+        #chart img
+        US.basic_chart(df,company)
+        #chart html
+        US.real_chart(df,company)
+    except:
+        return redirect("/")
     return render_template("inquiryTodayrate.html",searchingBy=company,stockRate=stock_rate)
 
 #나스닥 오늘의 종목 검색
@@ -170,8 +168,8 @@ def NasdaqRate():
         company = request.args.get('company')
         date = request.args.get('date')
         df_nasdaq = US.NASDAQ_connect()
-        stock_rate = US.NASDAQ_rate(df_nasdaq,company)
-        df = US.df_made(df_nasdaq,company,date)
+        stock_rate,symbol = US.NASDAQ_rate(df_nasdaq,company)
+        df = US.df_made(symbol,date)
         #chart img
         US.basic_chart(df,company)
         #chart html
@@ -187,17 +185,18 @@ def NyseSearch():
 #뉴욕 증권거래소 오늘의 시세 출력
 @app.route("/inquiry/nyserate")
 def NyseRate():
-    try:
-        company = request.args.get('company')
-        df_nyse = US.NYSE_connect()
-        stock_rate = US.NYSE_rate(df_nyse,company)
-        df = US.df_made(df_nyse,company,date)
-        #chart img
-        US.basic_chart(df,company)
-        #chart html
-        US.real_chart(df,company)
-    except:
-        return redirect("/")
+    #try:
+    company = request.args.get('company')
+    date = request.args.get('date')
+    df_nyse = US.NYSE_connect()
+    stock_rate,symbol = US.NYSE_rate(df_nyse,company)
+    df = US.df_made(symbol,date)
+    #chart img
+    US.basic_chart(df,company)
+    #chart html
+    US.real_chart(df,company)
+    #except:
+        #return redirect("/")
     return render_template("inquiryNyserate.html",searchingBy=company,stockRate=stock_rate)
 
 #아맥스 종목 검색
@@ -211,8 +210,8 @@ def AmexRate():
         company = request.args.get('company')
         date = request.args.get('date')
         df_amex = US.AMEX_connect()
-        stock_rate = US.AMEX_rate(df_amex,company)
-        df = US.df_made(df_amex,company,date)
+        stock_rate,symbol = US.AMEX_rate(df_amex,company)
+        df = US.df_made(symbol,date)
         #chart img
         US.basic_chart(df,company)
         #chart html
@@ -237,8 +236,8 @@ def EtfUSrate():
             if company[i] == "[":
                 name = company[:i]
         df_etfus = US.ETFUS_connect()
-        stock_rate = US.ETFUS_rate(df_etfus,name,company)
-        df = US.df_made(df_etfus,name,date)
+        stock_rate,symbol = US.ETFUS_rate(df_etfus,name,company)
+        df = US.df_made(symbol,date)
         #chart img
         US.basic_chart(df,name)
         #chart html

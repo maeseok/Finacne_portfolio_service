@@ -96,18 +96,24 @@
             </li>
           </ul>
           <ul class="nav navbar-nav ms-auto">
+            {% if session['ID'] %}
+            <li>
+              <ul class="nav navbar-nav ms-auto">
+                <li class="nav-item">
+                  <a class="nav-link active" aria-current="page" href="#"
+                    ><i class="bi bi-person-fill"></i>{{session['ID']}}</a
+                  >
+                </li>
+              <a class="nav-link active" aria-current="page" href="/logout"
+                ><i class="bi bi-box-arrow-left"></i> Logout</a
+              >
+            </li>
+            {% else %}
             <li class="nav-item">
               <a class="nav-link active" aria-current="page" href="/new"
                 ><i class="bi bi-person-plus-fill"></i> Sign Up</a
               >
             </li>
-            {% if session['ID'] %}
-            <li>
-              <a class="nav-link active" aria-current="page" href="/logout"
-                ><i class="bi bi-box-arrow-right"></i> Logout</a
-              >
-            </li>
-            {% else %}
             <li class="nav-item">
               <a class="nav-link active" aria-current="page" href="/login"
                 ><i class="bi bi-box-arrow-right"></i> Log In</a
