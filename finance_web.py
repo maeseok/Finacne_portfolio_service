@@ -12,7 +12,6 @@ import portfolio as p
 import chartcode as c
 import COIN
 import US
-import stockIndex
 import db
 #로그 관리 
 import logging
@@ -29,11 +28,9 @@ mongo = PyMongo(app)
 def home():  
     #이건 DB도 옮기자! CRON까지 이용하면 좋을듯
     #결국 이 함수때문에 늦음 -> 한계인가?
-    kospi_rate,kospi_profit= stockIndex.index_made("KS11")
-    sp500_rate,sp500_profit = stockIndex.index_made("US500")
-    coin_rate,coin_profit = stockIndex.coin_index()
-    return render_template("index.html",kospiRate = kospi_rate, sp500Rate = sp500_rate, kospiProfit = kospi_profit,sp500Profit = sp500_profit,
-    coinRate = coin_rate, coinProfit = coin_profit)
+    coinRate,coinProfit,sp500Rate,sp500Profit,kospiRate,kospiProfit = db.inquiry_index()
+    return render_template("index.html",kospiRate = kospiRate, sp500Rate = sp500Rate, kospiProfit = kospiProfit,sp500Profit = sp500Profit,
+    coinRate = coinRate, coinProfit = coinProfit)
 
 @app.route("/")
 def main():

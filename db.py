@@ -1,9 +1,38 @@
 import pymongo
 
+def inquiry_index():
+    path = "./DB/INDEX/coin.txt"
+    f = open(path,"r")
+    coinindex = f.read().splitlines()
+    f.close()
+    coinindex = coinindex[-2:]
+    coinRate = coinindex[0]
+    coinProfit = coinindex[1]
 
-def db_connect(dbname):
-    client = pymongo.MongoClient("mongodb+srv://maeseok:didc001@finance.smjhg.mongodb.net/members?retryWrites=true&w=majority")
-    db = client.dbname
+    path = "./DB/INDEX/sp500.txt"
+    f = open(path,"r")
+    sp500index = f.read().splitlines()
+    f.close()
+    sp500index = sp500index[-2:]
+    sp500Rate = sp500index[0]
+    sp500Profit = sp500index[1]
+
+    path = "./DB/INDEX/kospi.txt"
+    f = open(path,"r")
+    kospiindex = f.read().splitlines()
+    f.close()
+    kospiindex = kospiindex[-2:]
+    kospiRate = kospiindex[0]
+    kospiProfit = kospiindex[1]
+
+    return coinRate,coinProfit,sp500Rate,sp500Profit,kospiRate,kospiProfit
+
+
+def db_index():
+    client = pymongo.MongoClient("mongodb+srv://maeseok:didc001@finance.smjhg.mongodb.net/index?retryWrites=true&w=majority")
+    db = client.data
+    data = db.find()
+    print(data)
     return db
 # # 저장 - 예시
 
