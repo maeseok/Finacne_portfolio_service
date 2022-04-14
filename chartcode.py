@@ -11,10 +11,12 @@ import datetime
 import FinanceDataReader as fdr
 import US
 import pymongo
+import PWD
+pwd = PWD.pwd()
 #한국 가격 형식화 함수
 def KRX_rate(df_KRX,Name,date):
     nowDATE = US.time_format()
-    #client = pymongo.MongoClient("mongodb+srv://maeseok:didc001@finance.smjhg.mongodb.net/data?retryWrites=true&w=majority")
+    #client = pymongo.MongoClient("mongodb+srv://maeseok:"+pwd+"@finance.smjhg.mongodb.net/data?retryWrites=true&w=majority")
     #KRX = client['KRX']
     #KRX.data.create_index('Name')
     #find 속도만 빨라지면 될듯.. + 차트가 느림

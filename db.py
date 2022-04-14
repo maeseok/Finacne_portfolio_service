@@ -1,5 +1,6 @@
 import pymongo
-
+import PWD
+pwd = PWD.pwd()
 def inquiry_index():
     path = "./DB/INDEX/coin.txt"
     f = open(path,"r")
@@ -29,7 +30,7 @@ def inquiry_index():
 
 
 def db_index():
-    client = pymongo.MongoClient("mongodb+srv://maeseok:didc001@finance.smjhg.mongodb.net/index?retryWrites=true&w=majority")
+    client = pymongo.MongoClient("mongodb+srv://maeseok:"+pwd+"@finance.smjhg.mongodb.net/index?retryWrites=true&w=majority")
     db = client.data
     data = db.find()
     print(data)
