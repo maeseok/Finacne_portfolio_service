@@ -8,12 +8,25 @@
       href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap"
       rel="stylesheet"
     />
+    <link rel="icon" type="image/x-icon" href="../static/assets/bank.svg" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.0/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+    <script
+      src="https://code.jquery.com/jquery-3.6.0.js"
+      integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
+      crossorigin="anonymous"
+    ></script>
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
     <script
       src="https://kit.fontawesome.com/53a8c415f1.js"
       crossorigin="anonymous"
     ></script>
-    <link rel="stylesheet" href="../static/css/login.css" />
+    <link rel="stylesheet" href="../static/css/styles.css" />
     <script src="../static/js/focus.js"></script>
+    <script src="../static/js/login.js"></script>
+    <link rel="stylesheet" href="../static/css/login.css" />
     {%with messages = get_flashed_messages()%} {%if messages %}
     <script type="text/javascript">
       alert("{{messages[-1]}}");
@@ -21,12 +34,102 @@
     {%endif%} {%endwith%}
   </head>
   <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div class="container px-lg-5">
+        <a class="navbar-brand" href="/">Finance Portfolio</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav my-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="/main"
+                ><i class="bi bi-house-fill"></i> Home</a
+              >
+            </li>
+            <li class="nav-item" id="inqu">
+              <div class="dropdown">
+                <a class="nav-link" href="#"
+                  ><i class="bi bi-search"></i> Inquiry</a
+                >
+                <div class="dropdown-content" id="inqu-menu">
+                  <a href="/inquiry/search">한국주식) 시세 조회</a>
+                  <a href="/inquiry/return">한국주식) 수익률 조회</a>
+                  <a href="/inquiry/nasdaq">미국주식) 나스닥 조회</a>
+                  <a href="/inquiry/nyse">미국주식) 뉴욕 조회</a>
+                  <a href="/inquiry/amex">미국주식) 아맥스 조회</a>
+                  <a href="/inquiry/etfUS">미국주식) ETF 조회</a>
+                  <a href="/inquiry/coin">비트코인) 시세 조회</a>
+                </div>
+              </div>
+            </li>
+            <li class="nav-item" id="port">
+              <div class="dropdown">
+                <a class="nav-link" href="#"
+                  ><i class="bi bi-book"></i> Portfolio</a
+                >
+                <div class="dropdown-content" id="port-menu">
+                  <a href="/portfolio/buy">종목 매수</a>
+                  <a href="/portfolio/sell">종목 매도</a>
+                  <a href="/portfolio/inquiry">포트폴리오 조회</a>
+                  <a href="/portfolio/return">매도 수익</a>
+                </div>
+              </div>
+            </li>
+            <li class="nav-item" id="init">
+              <div class="dropdown">
+                <a class="nav-link" href="#"
+                  ><i class="bi bi-exclamation-triangle"></i> Initialize</a
+                >
+                <div class="dropdown-content" id="init-menu">
+                  <a href="/portfolio/init">포트폴리오 초기화</a>
+                </div>
+              </div>
+            </li>
+          </ul>
+          <ul class="nav navbar-nav ms-auto">
+            {% if session['ID'] %}
+            <li>
+              <ul class="nav navbar-nav ms-auto">
+                <li class="nav-item">
+                  <a class="nav-link active" aria-current="page" href="#"
+                    ><i class="bi bi-person-fill"></i>{{session['ID']}}</a
+                  >
+                </li>
+              <a class="nav-link active" aria-current="page" href="/logout"
+                ><i class="bi bi-box-arrow-left"></i> Logout</a
+              >
+            </li>
+            {% else %}
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="/new"
+                ><i class="bi bi-person-plus-fill"></i> Sign Up</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="/login"
+                ><i class="bi bi-box-arrow-right"></i> Log In</a
+              >
+            </li>
+            {%endif%}
+          </ul>
+        </div>
+      </div>
+    </nav>
     <form name="form" action="/new" method="post">
-      <div class="wrap">
+      <div class="wraps">
         <div class="login">
           <h2>회원가입</h2>
           <div class="login_id">
-            <h4>ID</h4>
+            <h4 class="h4">ID</h4>
             <input
               type="text"
               name="id"
@@ -36,25 +139,68 @@
             />
           </div>
           <div class="login_pw">
-            <h4>Password</h4>
+            <h4 class="h4">Password</h4>
             <input
               type="password"
               name="pwd"
               id="pwd"
               placeholder="패스워드"
+              class="pw"
               required
             />
           </div>
           <div class="login_pw">
-            <h4>Password check</h4>
-            <input
-              type="password"
-              name="pwd2"
-              id="pwd2"
-              placeholder="패스워드 확인"
-              required
-            />
+            <h4 class="h4">Password check</h4>
+            <div>
+              <input
+                type="password"
+                name="pwd2"
+                class="pw"
+                id="pwd2"
+                placeholder="패스워드 확인"
+                required
+              />
+              <span id="alert-success" style="display: none"
+                >비밀번호가 일치합니다.</span
+              >
+              <span
+                id="alert-danger"
+                style="display: none; color: #d92742; font-weight: bold"
+                >비밀번호가 일치하지 않습니다.</span
+              >
+            </div>
+            <div class="login_id">
+              <h4 class="h4">닉네임</h4>
+              <input
+                type="text"
+                name="nick"
+                id="nick"
+                placeholder="닉네임"
+                required
+              />
+            </div>
           </div>
+          <script>
+            $(".pw").focusout(function () {
+              const pwd1 = $("#pwd").val();
+              const pwd2 = $("#pwd2").val();
+
+              if (pwd1 != "" && pwd2 == "") {
+                null;
+              } else if (pwd1 != "" || pwd2 != "") {
+                if (pwd1 == pwd2) {
+                  $("#alert-success").css("display", "inline-block");
+                  $("#alert-danger").css("display", "none");
+                } else {
+                  $("#alert-success").css("display", "none");
+                  $("#alert-danger").css("display", "inline-block");
+                  pwd1.focus();
+                  pwd2.focus();
+                  return false;
+                }
+              }
+            });
+          </script>
           <!--<div class="login_etc">
           <<div class="checkbox">
             <input type="checkbox" name="" id="" /> Remember Me?

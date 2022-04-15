@@ -41,31 +41,34 @@ def main():
 @app.route("/new",methods=["GET","POST"])
 def new():
     if request.method == "POST":
+        #여기 입력되지 않은 값이나 비밀번호 일치 오류 등 js로 
         ID = request.form.get("id",type=str)
         pwd = request.form.get("pwd",type=str)
         pwd2 = request.form.get("pwd2",type=str)
-        if id=="" or pwd=="" or pwd2=="":
+        NICK = request.form.get("nick",type=str)
+        if id=="" or pwd=="" or pwd2==""or NICK=="":
             flash("입력되지 않은 값이 있습니다.")
             return render_template("new.html") 
         if pwd!=pwd2:
             flash("비밀번호가 일치하지 않습니다.")
-            return render_template("new.html") 
+            return redirect(url_for("new"))
         members = mongo.db.members
         data = members.find_one({"id":ID})
         if data is not None:
             flash("아이디가 중복됩니다.")
-            return render_template("new.html") 
+            return redirect(url_for("new"))
 
         post={
             "id":ID,
             "password": generate_password_hash(pwd),
+            "nickname":NICK,
             "logintime":"",
             "logincount":0,
         }
 
         members.insert_one(post)
         flash("회원가입이 완료되었습니다.")
-        return render_template("login.html")
+        return redirect(url_for("login"))
     else:
         return render_template("new.html")
 

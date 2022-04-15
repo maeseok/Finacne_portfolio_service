@@ -14,7 +14,7 @@ li {
   list-style: none;
 }
 
-.wrap {
+.wraps {
   width: 100%;
   height: 100vh;
   display: flex;
@@ -37,6 +37,13 @@ li {
 h2 {
   color: tomato;
   font-size: 2em;
+}
+.h4 {
+  font-size: 1em;
+  margin-top: 0;
+  margin-bottom: 0;
+  font-weight: 1000;
+  line-height: 1;
 }
 .login_sns {
   padding: 20px;
@@ -74,7 +81,6 @@ h2 {
   border: 1px solid lightgray;
   outline: none;
 }
-
 .login_pw {
   margin-top: 20px;
   width: 80%;
