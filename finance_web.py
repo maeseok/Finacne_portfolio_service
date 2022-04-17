@@ -116,20 +116,20 @@ def coininquiry():
 #코인 시세 결과
 @app.route("/inquiry/coinrate")
 def coinreturn():
-    try:
-        moneyvalue = request.args.get('moneyValue')
-        coinname = request.args.get('coinname')
-        if(moneyvalue== "KRW"):
-            df_coin,rate= COIN.coin_connect(moneyvalue,coinname,500)
-            coinrate = COIN.coin_rate(moneyvalue,coinname,df_coin,rate)
-        elif(moneyvalue == "USD"):
-            ticker = COIN.usd_connect(coinname)
-            df_coin = COIN.get_df_binance(ticker, "1d")
-            coinrate = COIN.coin_rate(moneyvalue, coinname, df_coin)
-        COIN.basic_chart(df_coin, coinname,moneyvalue)
-        COIN.real_chart(df_coin,coinname)
-    except:
-        return redirect("/")
+    #try:
+    moneyvalue = request.args.get('moneyValue')
+    coinname = request.args.get('coinname')
+    if(moneyvalue== "KRW"):
+        df_coin,rate= COIN.coin_connect(moneyvalue,coinname,500)
+        coinrate = COIN.coin_rate(moneyvalue,coinname,df_coin,rate)
+    elif(moneyvalue == "USD"):
+        ticker,rate = COIN.usd_connect(coinname)
+        df_coin = COIN.get_df_binance(ticker, "1d")
+        coinrate = COIN.coin_rate(moneyvalue, coinname, df_coin,rate)
+    COIN.basic_chart(df_coin, coinname,moneyvalue)
+    COIN.real_chart(df_coin,coinname)
+    #except:
+        #return redirect("/")
     return render_template("inquiryCoinrate.html",searchingBy=coinname,stockRate=coinrate)
 #포트폴리오 
 @app.route("/portfolio")
@@ -291,34 +291,59 @@ def portfolioBuy_return():
     else:
         flash("로그인을 먼저 해주세요.")
         return render_template("login.html")
-    get_buycollect = p.buy_open()
+    usersession = session['ID']
     name = request.args.get('name')
     moneyvalue = request.args.get('moneyValue')
+    price = int(request.args.get('price'))
+    number = int(request.args.get('number'))
+    symbol=""
+    datacheck=""
+    checkCode="0"
+    try:
+        df_krx = c.KRX_connect()
+        symbol = df_krx[df_krx.Name==name].Symbol.values[0].strip()
+    except:
+        flash("종목명을 확인해주세요.")
+        return redirect("/portfolio/buy")
+    #db 관련 코드 시작
+    user = mongo.db.userdata
+    data = user.find({
+    "$and" : [{
+                 "Id" : usersession
+              },
+              {
+                  "Name":name
+              }]
+})
+    for i in data:
+        datacheck = i.get("_id")
+        firstnum = int(i.get("Number"))
+        firstprice = int(i.get("Price"))
+    #데이터가 있다는 건 추가 매수라는 뜻 -> 값을 수정해야함
+    if(datacheck):
+        if(symbol):
+            user.update_one({
+            "_id": datacheck
+            },
+            {"$set":
+            {
+            "Price" : (firstprice*firstnum+price*number)/(firstnum+number),
+            "Number": firstnum+number
+            }
+            }
+            )
+            checkCode ="1"
+            pass
+    #신규 매수라는 뜻 -> 값을 추가해야함
+    else:
+        if(symbol):
+            post ={"Id":usersession,"Name":name,"Price":price,"Number":number}
+            user.insert_one(post)
+            checkCode ="2"
+
     path="/nomadcoders/boot/DB/check.txt"
     file = open(path, 'a')
-    global checkCode
-    checkCode="0"
-    df_krx = c.KRX_connect()
-    symbol = df_krx[df_krx.Name==name].Symbol.values[0].strip()
-    name = name + moneyvalue
-    print(name)
-    if symbol:
-        price = request.args.get('price')
-        number = request.args.get('number')
-        #이미 매수한 종목인지 확인
-        if(name in get_buycollect):
-            #매수한 경우 원래 값 수정
-            p.buy_correct(name, price, number, get_buycollect)
-            checkCode ="1"
-        else:
-            #새로 저장
-            if(symbol):
-                p.buy_save(name, price, number)
-                checkCode ="2"
-            else:
-                checkCode="3"
-    else:
-        return redirect("/portfolio")
+    #global checkCode
     file.write(checkCode)
     file.close()
     return render_template("portfolioBuy_return.html")
@@ -347,6 +372,8 @@ def BuyReturn():
         return redirect("/portfolio")
     return render_template("portfolioBuyReturn.html",check=Check)
 
+
+#여기서부터 다시 해야함
 #종목 매도 정보 입력
 @app.route("/portfolio/sell")
 def portfolioSell():
@@ -447,6 +474,7 @@ def portfolioInquiry():
         except:
             flash("로그인을 먼저 해주세요.")
             return render_template("login.html")
+        user = mongo.db.session['ID']
         global p
         Buyitem= []
         get_code = []

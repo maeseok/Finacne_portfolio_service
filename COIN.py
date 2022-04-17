@@ -401,6 +401,7 @@ def usd_connect(coinname):
     file = open(path, 'r')
     USDT_ticker = file.read().splitlines()
     USDT = []
+    rate=""
     for i in USDT_ticker:
         USDT.append(i)
     file.close()
@@ -408,7 +409,7 @@ def usd_connect(coinname):
     for i in range (len(usdcoin)):
         if(coinname == usdcoin[i]):
             TICKER = USDT[i]
-    return TICKER
+    return TICKER,rate
 
 
 #df 생성
@@ -424,6 +425,7 @@ def get_df_binance(ticker,time_interval):
     def parse_dates(ts):
         return datetime.datetime.fromtimestamp(ts/1000.0) #타임스탬프를 시간형식으로 전환 
     df['date'] = df['date'].apply(parse_dates) #Date컬럼에 적용 
+    print(df)
     return df #데이터프레임 반환
 
 #라이브러리 연결
@@ -452,10 +454,13 @@ def coin_rate(moneyvalue,coinitem,df,rate):
     #df_open = df[['open']]
     #df_open = df_open[-2:]
     df_close = df[['close']]
-    df_close = df_close[-1:]
+    df_close = df_close[-2:]
     #해당 값을 두 개의 변수에 저장
     firstrate = df_close['close'].values[0]
-    lastrate = rate
+    if(moneyvalue=="KRW"):
+        lastrate = rate
+    elif(moneyvalue=="USD"):
+        lastrate = df_close['close'].values[1]
     coinrate =[]
     #날짜와 코인 이름, 현재 가격을 추가
     coinrate.append(nowDATE)
