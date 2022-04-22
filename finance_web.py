@@ -394,48 +394,78 @@ def portfolioSell_return():
         except:
             flash("로그인을 먼저 해주세요.")
             return render_template("login.html")
-        buycollect = p.buy_open()
+        usersession = session['ID']
         sellname = request.args.get('name2')
-        sellprice = request.args.get('price2')
-        sellnumber = request.args.get('number2')
+        sellprice = int(request.args.get('price2'))
+        sellnumber = int(request.args.get('number2'))
         moneyvalue = request.args.get('moneyValue')
+        symbol = ""
+        try:
+            df_krx = c.KRX_connect()
+            symbol = df_krx[df_krx.Name==sellname].Symbol.values[0].strip()
+        except:
+            flash("종목명을 확인해주세요.")
+            return redirect("/portfolio/sell")
+        datacheck=""
+        user = mongo.db.userdata
+        data = user.find({
+        "$and" : [{
+                    "Id" : usersession
+                },
+                {
+                    "Name":sellname
+                }]
+        })
+        for i in data:
+            datacheck = i.get("_id")
+            firstnum = int(i.get("Number"))
+            firstprice = int(i.get("Price"))
         check = "0"
-        path="/nomadcoders/boot/DB/check.txt"
         checkcode = ""
-        file = open(path, 'a')
-        df_krx = c.KRX_connect()
-        symbol = df_krx[df_krx.Name==sellname].Symbol.values[0].strip()
-        if symbol:
-            for i in range(0,len(buycollect)):
-                if(buycollect[i] == sellname):
-                    saveprice = buycollect[i+1]
-                    savenumber = buycollect[i+2]
-                    remainprice = int(sellprice) - int(saveprice)
-                    #매도량과 종목이름 저장
-                    p.stock_item_save(sellname, sellnumber)
-                    #매도량이 매수량보다 많은지 확인
-                    checkcode = p.stock_item_check(sellname, savenumber)
+        if (symbol):
+            if(datacheck):
+                #매도량이 매수량보다 많은지 확인
+                if(firstnum < sellnumber):
+                    checkcode = 0
                 else:
-                    pass
-                #정상
+                    checkcode = 1
+            else:
+                flash("종목명을 확인하세요.")
+                return redirect("/portfolio/sell")
+            #정상
             if(checkcode == 1):
-                #매도한 정보 저장
-                p.sell_save(sellname, sellprice, sellnumber)
-                #수익률 정보 저장
-                p.profit_and_loss(sellname, saveprice, sellprice, remainprice, sellnumber)
+                remainprice = sellprice - firstprice
+                profit = (sellprice - firstprice) / firstprice*100
+                realprofit = remainprice * sellnumber
+                #매도한 정보 저장 - 조회 때 number 0 이면 출력 안하는 느낌 
+                user.update_one({
+                "_id": datacheck
+                },
+                {"$set":
+                {
+                "Number": firstnum - sellnumber
+                }
+                }
+                )
+                #수익률 정보 저장 - 단위는 저장 안해서 매도수익 조회 때 해야함
+                post ={"Id":usersession,"SellName":sellname,"Firstprice":firstprice,"Lastprice":sellprice,
+                "Sellnumber":sellnumber,"Profit":profit,"Realprofit":realprofit}
+                user.insert_one(post)
+                #p.profit_and_loss(sellname, saveprice, sellprice, remainprice, sellnumber)
                 check ="1"
             #매도량이 매수량을 넘음
             else:
                 #추가되어서 넘친 매도량 삭제
-                p.stock_item_correct(sellname)
+                flash("매도 수량을 확인하세요.")
                 check="2"
-                print("알림 : <매도 수량을 다시입력해주세요>")
-        else:
-            return redirect("/")
+                return redirect("/portfolio/sell")
+        path="/nomadcoders/boot/DB/check.txt"
+        file = open(path, 'a')
         file.write(check)
         file.close()
     except:
-        return redirect("/portfolio")
+        flash("입력한 값을 확인하세요.")
+        return redirect("/portfolio/sell")
     return render_template("portfolioSell_return.html")
 
 #종목 매도 완료
