@@ -2,8 +2,9 @@ from bs4 import BeautifulSoup
 import urllib.request as req
 import requests
 from datetime import timedelta, datetime
-from flask import Flask, render_template,request,redirect,flash,session,url_for
+from flask import Flask, render_template,request,redirect,flash,session,url_for,jsonify
 from flask_pymongo import PyMongo
+from flask_jwt_extended import *
 from werkzeug.security import generate_password_hash, check_password_hash
 #내가 만든 모듈
 from basic import db_connect,only_code_made, time_format
@@ -22,6 +23,13 @@ logging.basicConfig(filename = "./logs/test.log", level = logging.DEBUG)
 nowDATE = time_format()
 pwd = PWD.pwd()
 app = Flask(__name__)
+#app.config.update(DEBUG = True, JWT_SECRET_KEY = "thisissecertkey" )
+#jwt = JWTManager(app)
+#app.config['JWT_COOKIE_SECURE'] = False # https를 통해서만 cookie가 갈 수 있는지 (production 에선 True)
+#app.config['JWT_TOKEN_LOCATION'] = ['cookies']
+#app.config['JWT_ACCESS_COOKIE_PATH'] = '/main' # access cookie를 보관할 url (Frontend 기준)
+#app.config['JWT_REFRESH_COOKIE_PATH'] = '/main' # refresh cookie를 보관할 url (Frontend 기준)
+#app.config['JWT_COOKIE_CSRF_PROTECT'] = True
 app.config["MONGO_URI"] = "mongodb+srv://maeseok:"+pwd+"@finance.smjhg.mongodb.net/members?retryWrites=true&w=majority"
 app.config["SECRET_KEY"] = "bvWjJlEvRqsOBPnu"
 app.config["PERMANET_SESSION_LIFETIME"] = timedelta(minutes = 30)
@@ -85,6 +93,15 @@ def login():
             return redirect(url_for("login"))
         else:
             if check_password_hash(data.get("password"),pwd):
+                #access_token = create_access_token(identity = ID, expires_delta = False)
+                #refresh_token = create_refresh_token(identity = ID)
+
+                #resp = jsonify({'login' : True})
+
+                # 서버에 저장
+                #set_access_cookies(resp, access_token)
+                #set_refresh_cookies(resp, refresh_token)
+
                 session["ID"] = str(data.get("id"))
                 session.permenent = True
                 flash("로그인 성공!")
