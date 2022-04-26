@@ -425,6 +425,7 @@ def portfolioSell_return():
             return redirect("/portfolio/sell")
         datacheck=""
         user = mongo.db.userdata
+        sellprofit = mongo.db.profit
         data = user.find({
         "$and" : [{
                     "Id" : usersession
@@ -467,7 +468,7 @@ def portfolioSell_return():
                 #수익률 정보 저장 - 단위는 저장 안해서 매도수익 조회 때 해야함
                 post ={"Id":usersession,"SellName":sellname,"Firstprice":firstprice,"Lastprice":sellprice,
                 "Sellnumber":sellnumber,"Profit":profit,"Realprofit":realprofit}
-                user.insert_one(post)
+                sellprofit.insert_one(post)
                 #p.profit_and_loss(sellname, saveprice, sellprice, remainprice, sellnumber)
                 check ="1"
             #매도량이 매수량을 넘음
@@ -623,18 +624,26 @@ def portfolioInquiry():
 #매도 수익 출력
 @app.route("/portfolio/return")
 def portfolioReturn():
-    try:
-        if(session['ID']):
-            pass
-        PLcollect = p.pl_open()
-        if PLcollect:
-            length = len(PLcollect)
-        else:
-            return redirect("/")
-        return render_template("/portfolioReturn.html",PLcollect=PLcollect,len=length)
-    except:
-            flash("로그인을 먼저 해주세요.")
-            return render_template("login.html")
+    #try:
+    if(session['ID']):
+        pass
+    #except:
+    #    flash("로그인을 먼저 해주세요.")
+    #    return render_template("login.html")
+    PLcollect = []
+    sellprofit = mongo.db.profit
+    Session = session['ID']
+    result = sellprofit.find({"Id":Session})
+    for i in result:
+        #원화 달러 같은 통화 개념 구축해야하고, 수익률과 가격 format으로 자릿수와 , 해야함 {0:,.2f}
+        PLcollect.append(i.get("SellName"))
+        PLcollect.append(i.get("Firstprice"))
+        PLcollect.append(i.get("Lastprice"))
+        PLcollect.append(i.get("Sellnumber"))
+        PLcollect.append(i.get("Profit"))
+        PLcollect.append(i.get("Realprofit"))
+    length = len(PLcollect)
+    return render_template("/portfolioReturn.html",PLcollect=PLcollect,len=length)
 
 
 #포트폴리오 초기화 여부 확인

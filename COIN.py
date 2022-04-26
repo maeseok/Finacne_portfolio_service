@@ -473,13 +473,12 @@ def coin_rate(moneyvalue,coinitem,df,rate):
         gap = "{0:,.2f}".format(lastrate-firstrate)
     if(moneyvalue == "KRW"):
         #변동 계산 및 추가
-        #if(int(firstrate) > 100):
-        #    coinrate.append("{0:,.0f}".format(lastrate)+"원")
-        #elif(int(firstrate)<1):
-        #    coinrate.append("{0:,.3f}".format(lastrate)+"원")
-        #else:
-        #    coinrate.append("{0:,.2f}".format(lastrate)+"원")
-        coinrate.append(str(lastrate)+"원")
+        if(int(lastrate) > 100):
+            coinrate.append("{0:,.0f}".format(lastrate)+"원")
+        elif(int(lastrate)<1):
+            coinrate.append("{0:,.3f}".format(lastrate)+"원")
+        else:
+            coinrate.append("{0:,.2f}".format(lastrate)+"원")
         coinrate.append(gap+"원")
     elif(moneyvalue == "USD"):
          #변동 계산 및 추가
