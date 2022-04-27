@@ -10,6 +10,7 @@ def index_made(symbol):
     df = df[-2:]
     rate = "{0:,}".format(df['Close'].values[1])
     firstrate = df['Close'].values[0]
+    print(firstrate)
     lastrate = df['Close'].values[1]
     gap = "{0:,.0f}".format(lastrate-firstrate)
     profit = "{:.2f}".format((lastrate-firstrate)/firstrate*100) + "%"

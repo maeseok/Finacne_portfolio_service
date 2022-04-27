@@ -6,6 +6,7 @@ from flask import Flask, render_template,request,redirect,flash,session,url_for,
 from flask_pymongo import PyMongo
 from flask_jwt_extended import *
 from werkzeug.security import generate_password_hash, check_password_hash
+import FinanceDataReader as fdr
 #내가 만든 모듈
 from basic import db_connect,only_code_made, time_format
 from inquiry import stock_inquiry, rate_import
@@ -515,92 +516,116 @@ def portfolioSellReturn():
 @app.route("/portfolio/inquiry")
 def portfolioInquiry():
     #초기 리스트 생성
-    try:
+    #try:
         try:
             if(session['ID']):
                 pass
         except:
             flash("로그인을 먼저 해주세요.")
             return render_template("login.html")
-        user = mongo.db.session['ID']
-        global p
-        Buyitem= []
-        get_code = []
-        get_profit = []
-        get_presentrate = []
-        get_presentprofit = []
-        Buyremain=[]
-        sell_already=[]
-        ptotal=[]
-        ltotal=[]
-        last_total=0
-        present_total=0
-        longline = "\n"
+        Buyinfor = []
+        df_krx = c.KRX_connect()
+        usersession = session['ID']
+        user = mongo.db.userdata
+        data = user.find({"Id":usersession})
+        for i in data:
+            Name = i.get("Name")
+            Firstrate = i.get("Price")
+            Number = i.get("Number")
+            symbol = df_krx[df_krx.Name==Name].Symbol.values[0].strip()
+            date=COIN.time_format()
+            df_rate = fdr.DataReader(symbol,date)
+            print(df_rate)
+            Lastrate = df_rate['Close'].values[0]
+            print(Lastrate)
+            rate_gap = int(Lastrate) - int(Firstrate)
+            Rateprofit= rate_gap /int(Firstrate)*100
+            present_profit = rate_gap * int(Number)
+            Buyinfor.append(Name) #매수 종목
+            Buyinfor.append(Firstrate) #평단가
+            Buyinfor.append(Lastrate)  #현재가
+            Buyinfor.append(Number) #남은 수량
+            Buyinfor.append(Rateprofit) #현재 수익률
+            Buyinfor.append(present_profit) #현재 수익
+        portfolio_len =len(Buyinfor)
+        #global p
+        #Buyitem= []
+        #get_code = []
+        #get_profit = []
+        #get_presentrate = []
+        #get_presentprofit = []
+        #Buyremain=[]
+        #sell_already=[]
+        #ptotal=[]
+        #ltotal=[]
+        #last_total=0
+        #present_total=0
+        #longline = "\n"
         #매수 정보 불러옴
-        Buyinfor = p.buy_open()
-        Sellinfor = p.sell_open()
-        Size = len(Buyinfor) / 3
-        for i in range(0,int(Size)):
+        #Buyinfor = p.buy_open()
+        #Sellinfor = p.sell_open()
+        #Size = len(Buyinfor) / 3
+        #for i in range(0,int(Size)):
             #매수 종목을 리스트에 저장
-            Buyitem.append(Buyinfor[3*i])
-        for i in range(0,len(Buyitem)):
-            for j in range(0,len(Buyinfor)):
+        #    Buyitem.append(Buyinfor[3*i])
+        #for i in range(0,len(Buyitem)):
+        #    for j in range(0,len(Buyinfor)):
                 #종목 이름이 들어있는 항목의 위치를 찾음
-                if(Buyitem[i] == Buyinfor[j]):
+        #        if(Buyitem[i] == Buyinfor[j]):
                     #매도한 내용이 있는지 확인
-                    if(len(Sellinfor) != 0):
-                        for s in range(0,len(Sellinfor)):
-                            if(Buyinfor[j] == Sellinfor[s]):
-                                if(Sellinfor[s] not in sell_already):
+        #            if(len(Sellinfor) != 0):
+        #                for s in range(0,len(Sellinfor)):
+        #                    if(Buyinfor[j] == Sellinfor[s]):
+        #                        if(Sellinfor[s] not in sell_already):
                                     #해당 종목의 매도량을 저장함
-                                    stocknumber = p.stock_item_open(Buyitem[i])
+        #                            stocknumber = p.stock_item_open(Buyitem[i])
                                     #현재 남은 수량을 저장함
-                                    Buyremain = int(Buyinfor[j+2]) - stocknumber
+        #                           Buyremain = int(Buyinfor[j+2]) - stocknumber
                                     #리스트에 최신화(리스트를 이용하여 출력할 것이기 때문이다.)
-                                    Buyinfor[j+2] = Buyremain
-                                    sell_already.append(Sellinfor[s])
+        #                            Buyinfor[j+2] = Buyremain
+        #                            sell_already.append(Sellinfor[s])
                                     #코드만 불러옴
-                                else:
-                                    pass
-                            else:
-                                Buyremain = Buyinfor[j+2]
-                    else:
+        #                        else:
+        #                            pass
+        #                    else:
+        #                        Buyremain = Buyinfor[j+2]
+        #            else:
                         #매도 내용이 없으면 현재 수량을 남은 수량으로 저장
-                        Buyremain = Buyinfor[j+2]
+        #                Buyremain = Buyinfor[j+2]
                     #최종적으로 종목을 출력 형식에 맞게 값을 변형시킴
-                    df_krx = c.KRX_connect()
-                    get_code = df_krx[df_krx.Name==Buyitem[i]].Symbol.values[0].strip()  
-                    get_profit, get_presentrate, get_presentprofit,get_ptotal,get_ltotal = p.present_rate(get_code,Buyitem[i],Buyinfor[j+1],Buyremain) 
-                    ptotal.append(get_ptotal)
-                    ltotal.append(get_ltotal)
-                    Buyinfor.insert(j+2,get_presentrate)
-                    Buyinfor.insert(j+3,get_profit)
-                    Buyinfor.insert(j+5,get_presentprofit)
-                    Buyinfor.insert(j+6,longline)
-                else:
-                    pass
-        for l in range(0, len(Buyinfor)):
-            if(Buyinfor[l] == 0):
+        #            df_krx = c.KRX_connect()
+        #            get_code = df_krx[df_krx.Name==Buyitem[i]].Symbol.values[0].strip()  
+        #            get_profit, get_presentrate, get_presentprofit,get_ptotal,get_ltotal = p.present_rate(get_code,Buyitem[i],Buyinfor[j+1],Buyremain) 
+        #            ptotal.append(get_ptotal)
+        #            ltotal.append(get_ltotal)
+        #            Buyinfor.insert(j+2,get_presentrate)
+        #            Buyinfor.insert(j+3,get_profit)
+        #            Buyinfor.insert(j+5,get_presentprofit)
+        #            Buyinfor.insert(j+6,longline)
+        #        else:
+        #            pass
+        #for l in range(0, len(Buyinfor)):
+        #    if(Buyinfor[l] == 0):
                 #만약 남은 수량이 0이라면 해당 정보가 출력되지 않게 삭제함
-                del Buyinfor[l-4:l+3]
-                break
-            else:
-                pass
+        #        del Buyinfor[l-4:l+3]
+        #        break
+        #    else:
+        #        pass
 
         #입력된 내용을 형식적으로 다듬는 과정
-        for k in range(0,len(Buyinfor)):
-            if(k%7 == 1 ):
-                average_rate = Buyinfor[k]
-                get_average = format(int(average_rate),',')
-                average = "평단가 : "+ get_average+"원"
-                Buyinfor[k] = average
-            elif(k%7 == 4):
-                amount = Buyinfor[k]
-                get_amount = format(int(amount),',')
-                stock_amount = "수량 : " + get_amount+"주"
-                Buyinfor[k] = stock_amount
-            else:
-                pass
+        #for k in range(0,len(Buyinfor)):
+        #    if(k%7 == 1 ):
+        #        average_rate = Buyinfor[k]
+        #        get_average = format(int(average_rate),',')
+        #        average = "평단가 : "+ get_average+"원"
+        #        Buyinfor[k] = average
+        #    elif(k%7 == 4):
+        #        amount = Buyinfor[k]
+        #        get_amount = format(int(amount),',')
+        #        stock_amount = "수량 : " + get_amount+"주"
+        #        Buyinfor[k] = stock_amount
+        #    else:
+        """        pass
         #총합 값 계산
         for n in range(0,len(ltotal)):
             last_total += ltotal[n] 
@@ -616,10 +641,10 @@ def portfolioInquiry():
             Buyinfor.append("구매 총합 : "+get_latotal+"원")
             Buyinfor.append("현재 총합 : "+get_prtotal+"원")
             Buyinfor.append("총 수익률 : "+"{:0,.2f}".format(total_profit)+"%")
-        portfolio_len =len(Buyinfor)
+        portfolio_len =len(Buyinfor)"""
         return render_template("portfolioInquiry.html",portfolio=Buyinfor,portfolio_len=portfolio_len)
-    except:
-        return render_template("portfolio.html")
+    #except:
+        #return render_template("portfolio.html")
 
 #매도 수익 출력
 @app.route("/portfolio/return")
