@@ -58,6 +58,6 @@ schedule.every(1).minutes.do(coin_index)
 while True:
     schedule.run_pending()
     print("스케줄 실행 중!")
-    time.sleep(60)
+    time.sleep(2)
 
 

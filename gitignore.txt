@@ -1,0 +1,15 @@
+node_modules
+__pycache__
+.gitignore
+TEST.py
+.cache
+.parcel-cache
+package.json
+requirements.txt
+package-lock.json
+dist/
+test.log
+plan.txt
+pandas.txt
+site.txt
+PWD.py

@@ -1,0 +1,58 @@
+https://wikidocs.net/92071
+
+https://hyunyulhenry.github.io/quant_cookbook/ 퀀트 투자 책 
+
+https://cocoon1787.tistory.com/553
+
+아이콘 사이트 https://icons.getbootstrap.com/icons/house-fill/
+
+http://daplus.net/jquery-ui-jquery-ui-%EC%9E%90%EB%8F%99-%EC%99%84%EC%84%B1%EC%97%90%EC%84%9C-%EA%B2%B0%EA%B3%BC-%EC%A0%9C%ED%95%9C/
+
+#financedatareader 설명
+https://seong6496.tistory.com/169
+
+#Date index 제외
+https://mskim8717.tistory.com/132?category=982794
+
+구글 도서 무료임!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+https://kr.tradingview.com/chart/?symbol=KRX%3AKOSPI
+
+ccxt site
+https://fantagirl.colatribes.com/57
+
+씨발 plt / 특수문자 있으면 이미지 저장 안 되는 고장 고침
+https://stackoverflow.com/questions/56012636/python-mathplotlib-savefig-filenotfounderror
+
+https://dndi117.tistory.com/entry/%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EB%B0%94%EC%9D%B4%EB%82%B8%EC%8A%A4%EC%97%90%EC%84%9C-%EB%8D%B0%EC%9D%B4%ED%84%B0-%ED%81%AC%EB%A1%A4%EB%A7%81%ED%95%98%EA%B8%B0
+
+
+
+#html bootstrap 설명 - 매우매우 중요!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+https://www.w3schools.com/bootstrap5/bootstrap_navbar.php
+
+
+https://chlee21.tistory.com/96
+
+https://www.w3schools.com/code/tryit.asp?filename=GCZ8YS6ZWWKZ
+
+https://myunji.tistory.com/156 내일 이거 까보자
+
+https://popawaw.tistory.com/7?category=893162
+
+https://edu.goorm.io/qna/11059
+
+https://ohdowon064.tistory.com/123
+
+----비밀번호
+https://ungdoli0916.tistory.com/298
+https://jerryjerryjerry.tistory.com/27
+
+
+1. 백그라운드 실행을 할 파일에 권한 주기
+chmod 755 app.py
+2. 백그라운드 실행하기(원격 접속을 종료하더라도 서버가 계속 돌아가게 하기)
+nohup python app.py &
+3. 종료하기
+ps -ef | grep 'app.py' # pid 값(프로세스 번호) 조회
+kill -9 [pid값]

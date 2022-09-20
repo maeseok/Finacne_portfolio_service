@@ -1,0 +1,54 @@
+js 책 학습 -> 페이지 구성 끝
+
+0229 
+이후 js 책 실습 -> js 조금씩 구현 !!
+
+0327
+느낀 점 : 크롤링은 데이터 긁어오는데 너무 오래걸린다 -> 라이브러리가 좋음 -> 현재 크롤링 코드에서 라이브러리 코드로 변경작업중(파일에 저장)
+
+didc001
+
+- search index가 뭔지 알아보기..
+나중에 비트코인 시세 속도 느림 해결하기
+
+쿠키를 사용해야 하나 ?
+
+1. 포트폴리오 코드 db 용도로 변경해야함!!
+
+--> 조회 속도 너무 느려 터짐
+
+2. 라이브러리로 입력 값 이동가능하게 설정 
+종목 검색 클릭 -> 검색창 뜸 -> 여기서 클릭을 한 후 리스트 검색이나 클릭 없이 모든 리스트 중 검색하여 출력한 후 클릭 가능하게
+() - DB도 같이 건드려야될수도
+
+특정 메뉴 선택하면 display 보이게 해서 특정 종목만 보이게 
+
+서버랑 통신하며 데이터를 db에 실시간으로 ?
+https://sidongmen.tistory.com/11
+https://codepen.io/thenexus00/pen/VzwoMa
+https://codepen.io/j_holtslander/pen/yYzpYo
+search overlay로 검색창은 되었고 거기에 주식 리스트를 넣던가 체크 시 특정 리스트만 검색되게 ?
+
+2. 라이브러리 연결되게 바꿔야함(present_rate) -> 2번 3번 같이 진행해야함.. - 매수, 매도 종목 구분 후 해당 종목에 맞는 데이터 출력
+3. 암호화폐, 미국 증시 포트폴리오에 구현.. -> 각각 미국이나 한국 클릭 시 특정 종목만 나오게 구분되게 구현
+
+4. 그 다음은 포트폴리오 데이터화 = 조회 시 차트나 원형으로 출력되게 할 것
+
+-------------------------------------------------------------
+고급 차트에서 홈으로 가는 버튼 만들기!
+
+
+echo "# 123" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git branch -M main
+git remote add origin https://github.com/maeseok/123.git
+git push -u origin main
+
+VW(viewport height) 단위란?
+vw단위를 사용하게 되면 viewport의 폭에 영향을 받습니다
+예를 들어 사용자가 보고 있는 웹페이지 뷰포트의 너비가 1000px이면 1vw는 10px이 됩니다
+
+VH(viewport width) 단위란?
+비슷한 내용으로 vh단위는 viewport의 높이에 영향을 받습니다?
