@@ -19,7 +19,7 @@ import sys
 import PWD
 
 #로그 관리 
-#TEST
+#TEST213123
 import logging
 logging.basicConfig(filename = "./logs/test.log", level = logging.DEBUG)
 nowDATE = time_format()
