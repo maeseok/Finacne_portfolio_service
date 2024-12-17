@@ -29,6 +29,9 @@ Finance_portfolio_service/
 │-- app.py              # Flask 메인 서버 코드
 │-- requirements.txt    # 의존성 패키지
 │-- README.md           # 프로젝트 문서
+```
+
+--- 
 
 ## 📸 스크린샷
 ![image](https://github.com/user-attachments/assets/44400b87-1857-480a-af28-a21c49f4ad7c)
