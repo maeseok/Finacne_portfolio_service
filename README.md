@@ -26,9 +26,10 @@ Flask 기반으로 MongoDB와 데이터 시각화를 활용하여 주식 포트�
 Finance_portfolio_service/
 │-- static/             # CSS, JS 파일
 │-- templates/          # HTML 템플릿
-│-- app.py              # Flask 메인 서버 코드
+│-- fiance_web.py              # Flask 메인 서버 코드
 │-- requirements.txt    # 의존성 패키지
 │-- README.md           # 프로젝트 문서
+|-- **.py               # 기능 구현을 위한 Python 파일
 ```
 
 --- 
